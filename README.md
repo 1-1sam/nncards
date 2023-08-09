@@ -25,6 +25,8 @@ nncards is controlled through various key commands.
 | a   | Go to beginning card |
 | q   | Quit nncards         |
 
+Consult the manual for further documentation.
+
 ## Building
 
 The only thing you need to build nncards is a C compiler.
