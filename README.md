@@ -1,5 +1,5 @@
 # nncards
-TUI flashcard program for Unix-like systems. Designed with simplicity and 
+TUI flashcard program for Unix-like systems designed with simplicity and 
 portability in mind.
 
 ## Usage
