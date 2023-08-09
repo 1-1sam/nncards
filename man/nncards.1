@@ -1,0 +1,73 @@
+.Dd $Mdocdate: August 8 2023 $
+.Dt NNCARDS 1
+.Os
+.Sh NAME
+.Nm nncards
+.Nd TUI flashcard program
+.Sh SYNOPSIS
+.Nm nncards
+.Op Fl trhv
+.Ar file
+.Sh DESCRIPTION
+.Nm
+is a program that interprets a given card file and displays the parsed cards
+in a simple TUI.
+.Nm
+was developed with simplicity and portability in mind.
+.Pp
+.Nm
+files are formatted plain-text files. The following is a quick guide to
+formatting
+.Nm
+files:
+.Bl -bullet
+.It 
+Each non-blank or non-comment line must contain a term and definition,
+seperated by a colon (:) character. Any whitespace between the colon and
+definition is ignored. Terms or definitions can contain a maximum of 254
+characters.
+.It
+Lines starting with a hash (#) are interpreted as comments and ignored.
+.It
+Blank lines are ignored.
+.It
+Lines that do not contain valid terms/definitions and are not comments will
+cause
+.Nm
+to throw a format error.
+.El
+.Pp
+.Em example.cards
+contains an example card file which you can consult if you wish to see how
+a card file is formatted.
+.Pp
+.Nm
+is controlled through various keys:
+.Pp
+.Bl -column
+.It c Ta Next card
+.It z Ta Previous card
+.It x Ta Flip card
+.It d Ta Go to final card
+.It a Ta Go to beginning card
+.It q Ta Quit
+.Pp
+.Nm
+has the following options:
+.Bl -tag -width Ds
+.It Fl t
+Show terms first rather than definitions.
+.It Fl r
+Randomize the order the cards appear in.
+.It Fl h
+Print help message.
+.It Fl v
+Print
+.Nm
+version.
+.El
+.Sh AUTHORS
+Written by Samuel Young.
+.Sh BUGS
+Probably some. Report bugs on my Codeberg,
+.Em https://codeberg.org/1-1sam
