@@ -36,12 +36,6 @@ int
 cp_get_cards(struct card* cards, char* filename) {
 
 	FILE* cardfile = fopen(filename, "r");
-
-	if (cardfile == NULL) {
-		fprintf(stderr, "%s: Cannot be opened\n", filename);
-		return -1;
-	}
-
 	int card_count = 0;
 	char line[MY_BUFSIZE];
 	enum line_state { TERM, DEFINITION, WHITESPACE } line_state;
