@@ -7,8 +7,8 @@
 #define CARD_STR_MAX 255
 
 struct card {
-	char side1[CARD_STR_MAX];
-	char side2[CARD_STR_MAX];
+	char side1[CARD_STR_MAX]; /* By default, these are definitions */
+	char side2[CARD_STR_MAX]; /* By default, these are terms */
 };
 
 int
