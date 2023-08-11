@@ -109,7 +109,6 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 
 	struct card tmpcards[cardnum];
 	memcpy(tmpcards, cards, sizeof(struct card) * cardnum);
-	memset(cards, 0, sizeof(struct card) * cardnum);
 
 	int r;
 
