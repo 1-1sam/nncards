@@ -53,19 +53,16 @@ cp_get_cards(struct card* cards, char* filename) {
 		ti = 0;
 		di = 0;
 
-		/* Ignore comments and blanks. */
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
 
 		for (int i = 0; line[i]; i++) {
 
-			/* Die if the end of the line is reached before the definition is parsed. */
 			if (line[i] == '\n' && (line_state == TERM || line_state == WHITESPACE)) {
 				fprintf(stderr, "%s: Cannot be parsed, verify the file is formatted correctly\n", filename);
 				return -1;
 			}
 
-			/* Die if the term/definition is too long (Over 254 characters). */
 			if (di >= CARD_STR_MAX || ti >= CARD_STR_MAX) {
 				fprintf(stderr, "%s: Term or definition exceeded 254 character limit\n", filename);	
 				return -1;
