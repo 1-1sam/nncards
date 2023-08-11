@@ -117,10 +117,8 @@ nnc_main_loop(struct nncards nncards) {
 				break;
 			/* Flip card */
 			case 'x':
-				if (currstr == cards[currcard].side1)
-					currstr = cards[currcard].side2;
-				else if (currstr == cards[currcard].side2)
-					currstr = cards[currcard].side1;
+				currstr = (currstr == cards[currcard].side1)
+					? cards[currcard].side2 : cards[currcard].side1;
 				break;
 			/* Go to beginning card */
 			case 'a':
