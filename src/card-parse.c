@@ -102,7 +102,6 @@ cp_open_test(char* filename) {
 
 }
 
-/* TODO: Is there a way I can do this with pointers rather than memcpys? */
 void
 cp_card_shuffle(struct card* cards, int cardnum) {
 
@@ -111,21 +110,17 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 	struct card tmpcards[cardnum];
 	memcpy(tmpcards, cards, sizeof(struct card) * cardnum);
 	memset(cards, 0, sizeof(struct card) * cardnum);
+
 	int r;
 
 	for (int i = 0, cardsleft = cardnum; cardsleft > 0; i++, cardsleft--) {
 		r = rand() % cardsleft;
 		
-		memcpy(cards[i].side1, tmpcards[r].side1, CARD_STR_MAX);
-		memcpy(cards[i].side2, tmpcards[r].side2, CARD_STR_MAX);
-
-		memcpy(tmpcards[r].side1, tmpcards[cardsleft - 1].side1, CARD_STR_MAX);
-		memcpy(tmpcards[r].side2, tmpcards[cardsleft - 1].side2, CARD_STR_MAX);
-
+		cards[i] = tmpcards[r];
+		tmpcards[r] = tmpcards[cardsleft - 1];
 	}
 }
 
-/* TODO: '' */
 void
 cp_side_swap(struct card* cards, int cardnum) {
 
