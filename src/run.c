@@ -35,7 +35,13 @@ _print_version() {
 struct nncards
 nnc_init(int argc, char** argv) {
 
-	struct nncards nnc_return = { RUN, NULL, DEFINITION, 0 };
+	struct nncards nnc_return = { 
+		.run = RUN,
+		.cardfile = NULL, 
+		.opt_first_side = DEFINITION,
+		.opt_random = 0 
+	};
+	
 	int c;
 
 	while ((c = getopt(argc, argv, "trhv")) != -1) {

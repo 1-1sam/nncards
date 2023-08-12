@@ -72,13 +72,10 @@ cp_get_cards(struct card* cards, char* filename) {
 				break;
 			}
 
-			if (line_state == TERM) {
+			if (line_state == TERM)
 				cards[card_count].side2[ti++] = line[i];
-			} else if (line_state == DEFINITION) {
+			else if (line_state == DEFINITION)
 				cards[card_count].side1[di++] = line[i];
-			}
-
-
 		}
 
 		card_count++;
