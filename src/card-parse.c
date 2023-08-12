@@ -43,16 +43,17 @@ cp_get_cards(struct card* cards, char* filename) {
 
 	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
 
+		char *l = line;
 		line_state = TERM;
 		ti = 0;
 		di = 0;
 
-		if (line[0] == '#' || line[0] == '\n')
+		if (*l == '#' || *l == '\n')
 			continue;
 
-		for (int i = 0; line[i]; i++) {
+		for (; *l; l++) {
 
-			if (line[i] == '\n' && (line_state == TERM || line_state == WHITESPACE)) {
+			if (*l == '\n' && (line_state == TERM || line_state == WHITESPACE)) {
 				fprintf(stderr, "%s: Cannot be parsed, verify the file is formatted correctly\n", filename);
 				return -1;
 			}
@@ -62,20 +63,20 @@ cp_get_cards(struct card* cards, char* filename) {
 				return -1;
 			}
 
-			if (line[i] == ':' && line_state == TERM) {
+			if (*l == ':' && line_state == TERM) {
 				cards[card_count].side2[ti] = '\0';
 				line_state = WHITESPACE;	
-			} else if (line[i] != ' ' && line[i] != '\t' && line_state == WHITESPACE) {
+			} else if (*l != ' ' && *l != '\t' && line_state == WHITESPACE) {
 				line_state = DEFINITION;
-			} else if (line[i] == '\n') {
+			} else if (*l == '\n') {
 				cards[card_count].side1[di] = '\0';
 				break;
 			}
 
 			if (line_state == TERM)
-				cards[card_count].side2[ti++] = line[i];
+				cards[card_count].side2[ti++] = *l;
 			else if (line_state == DEFINITION)
-				cards[card_count].side1[di++] = line[i];
+				cards[card_count].side1[di++] = *l;
 		}
 
 		card_count++;
