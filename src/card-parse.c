@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
 #define MY_BUFSIZE 1024
 #define CARD_STR_MAX 255
@@ -58,14 +59,14 @@ cp_get_cards(struct card* cards, char* filename) {
 			}
 
 			if (di >= CARD_STR_MAX || ti >= CARD_STR_MAX) {
-				fprintf(stderr, "%s: Term or definition exceeded 254 character limit\n", filename);	
+				fprintf(stderr, "%s: Term or definition exceeded 254 character limit\n", filename);
 				return -1;
 			}
 
 			if (*l == ':' && line_state == TERM) {
 				cards[card_count].side2[ti] = '\0';
-				line_state = WHITESPACE;	
-			} else if (*l != ' ' && *l != '\t' && line_state == WHITESPACE) {
+				line_state = WHITESPACE;
+			} else if (!isblank(*l) && line_state == WHITESPACE) {
 				line_state = DEFINITION;
 			} else if (*l == '\n') {
 				cards[card_count].side1[di] = '\0';
@@ -109,7 +110,7 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 
 	for (int i = 0, cardsleft = cardnum; cardsleft > 0; i++, cardsleft--) {
 		r = rand() % cardsleft;
-		
+
 		cards[i] = tmpcards[r];
 		tmpcards[r] = tmpcards[cardsleft - 1];
 	}
