@@ -55,15 +55,10 @@ _get_image_info(char* filename) {
 
 	sprintf(w3m_get_img_size, "echo -e '5;%s' | %s", filename, w3mimg);
 
+	/* TODO: Switch to popen */
 	system(w3m_get_img_size);
 
-	/* TODO: Make this work */
 	/* Gouge out the width and height from w3mimgdisplay's output */
-	pipe(pipefd);
-	dup2(pipefd[1], fileno(stdout));
-	read(pipefd[0], pipebuf, MY_BUFSIZE);
-
-	printf("%s\n",pipebuf);
 
 	free(w3mimg);
 	free(w3m_get_img_size);
