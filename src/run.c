@@ -5,10 +5,10 @@
 #include "card-parse.h"
 
 struct nncards {
-	enum run { RUN, NORUN } run; 
+	enum run { RUN, NORUN } run;
 	char* cardfile;
-	enum opt_first_side { TERM, DEFINITION } opt_first_side; 
-	int opt_random;	
+	enum opt_first_side { TERM, DEFINITION } opt_first_side;
+	int opt_random;
 };
 
 static void
@@ -35,13 +35,13 @@ _print_version() {
 struct nncards
 nnc_init(int argc, char** argv) {
 
-	struct nncards nnc_return = { 
+	struct nncards nnc_return = {
 		.run = RUN,
-		.cardfile = NULL, 
+		.cardfile = NULL,
 		.opt_first_side = DEFINITION,
-		.opt_random = 0 
+		.opt_random = 0
 	};
-	
+
 	int c;
 
 	while ((c = getopt(argc, argv, "trhv")) != -1) {
@@ -70,7 +70,7 @@ nnc_init(int argc, char** argv) {
 		fprintf(stderr, "No argument was passed\n");
 		nnc_return.run = NORUN;
 	}
-	
+
 	return nnc_return;
 }
 
@@ -138,7 +138,7 @@ nnc_main_loop(struct nncards nncards) {
 			case 'q':
 				tb_shutdown();
 				return 0;
-		}	
+		}
 	}
 }
 

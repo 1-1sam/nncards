@@ -17,7 +17,7 @@ _card_print(char* str) {
 
 	do {
 		memset(line, 0, linelen);
-		
+
 		for (int i = 0; i < linelen && str[str_i]; i++, str_i++)
 			line[i] = str[str_i];
 		line[linelen] = '\0';
@@ -41,7 +41,7 @@ tui_draw_card(char* str) {
 	tb_set_cell(w - 2, h - 3, 0x2518, 0, 0);
 
 	/* Drawing top line. */
-	for (int i = 2; i < w - 2; i++) 
+	for (int i = 2; i < w - 2; i++)
 		tb_set_cell(i, 2, 0x2500, 0, 0);
 
 	/* Draw bottom line. */
@@ -56,7 +56,7 @@ tui_draw_card(char* str) {
 	for (int i = 3; i < h - 3; i++)
 		tb_set_cell(1, i, 0x2502, 0, 0);
 
-	_card_print(str);	
+	_card_print(str);
 
 	tb_present();
 

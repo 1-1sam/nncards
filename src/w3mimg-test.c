@@ -55,7 +55,7 @@ _get_image_info(char* filename) {
 	FILE* w3mpipe;
 	char w3mbuf[MY_BUFSIZE];
 	enum dim { WDTH, HGHT };
-		
+
 	w3m_get_img_size = malloc(strlen(filename) +
 							  strlen(w3mimg) +
 							  strlen("echo -e '5;' | ") +
@@ -68,7 +68,7 @@ _get_image_info(char* filename) {
 	fgets(w3mbuf, MY_BUFSIZE, w3mpipe);
 	pclose(w3mpipe);
 
-	
+
 
 	free(w3mimg);
 	free(w3m_get_img_size);
