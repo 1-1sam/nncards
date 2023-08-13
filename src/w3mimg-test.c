@@ -5,9 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
-#define TB_IMPL
-#include "termbox.h"
+#define MY_BUFSIZE 100
 
 struct image {
 	char* filename;
@@ -35,6 +35,7 @@ _get_w3mimg_lib() {
 		}
 	}
 
+	fprintf(stderr, "Could not find w3mimgdisplay\n");
 	return NULL;
 }
 
@@ -49,13 +50,20 @@ _get_image_info(char* filename) {
 
 	struct image rtrn_img;
 	rtrn_img.filename = filename;
+	int pipefd[2];
+	char pipebuf[MY_BUFSIZE];
 
 	sprintf(w3m_get_img_size, "echo -e '5;%s' | %s", filename, w3mimg);
 
 	system(w3m_get_img_size);
 
+	/* TODO: Make this work */
 	/* Gouge out the width and height from w3mimgdisplay's output */
+	pipe(pipefd);
+	dup2(pipefd[1], fileno(stdout));
+	read(pipefd[0], pipebuf, MY_BUFSIZE);
 
+	printf("%s\n",pipebuf);
 
 	free(w3mimg);
 	free(w3m_get_img_size);
