@@ -39,14 +39,13 @@ cp_get_cards(struct card* cards, char* filename) {
 	int card_count = 0;
 	char line[MY_BUFSIZE];
 	enum line_state { TERM, DEFINITION, WHITESPACE } line_state;
-	int ti, di;
 
 	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
 
 		char *l = line;
 		line_state = TERM;
-		ti = 0;
-		di = 0;
+		int ti = 0;
+		int di = 0;
 
 		if (*l == '#' || *l == '\n')
 			continue;
@@ -78,9 +77,7 @@ cp_get_cards(struct card* cards, char* filename) {
 			else if (line_state == DEFINITION)
 				cards[card_count].side1[di++] = *l;
 		}
-
 		card_count++;
-
 	}
 
 	fclose(cardfile);
