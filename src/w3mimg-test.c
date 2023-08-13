@@ -11,8 +11,9 @@
 
 struct image {
 	char* filename;
-	int ow;
-	int oh;
+	int w;
+	int h;
+	int status;
 };
 
 static char*
@@ -24,7 +25,7 @@ _get_w3mimg_lib() {
     	"/usr/libexec/w3m/w3mimgdisplay",
     	"/usr/lib64/w3m/w3mimgdisplay",
     	"/usr/libexec64/w3m/w3mimgdisplay",
-    	"/usr/local/libexec/w3m/w3mimgdisplay"	
+    	"/usr/local/libexec/w3m/w3mimgdisplay"
 	};
 
 	for (int i = 0; i < 5; i++) {
@@ -43,22 +44,31 @@ static struct image
 _get_image_info(char* filename) {
 
 	char* w3mimg = _get_w3mimg_lib();
-	char* w3m_get_img_size = malloc(strlen(filename) +
-									strlen(w3mimg) +
-									strlen("echo -e '5;' | ") +
-									1);
-
 	struct image rtrn_img;
-	rtrn_img.filename = filename;
-	int pipefd[2];
-	char pipebuf[MY_BUFSIZE];
+
+	if (w3mimg == NULL) {
+		rtrn_img.status = -1;
+		return rtrn_img;
+	}
+
+	char* w3m_get_img_size;
+	FILE* w3mpipe;
+	char w3mbuf[MY_BUFSIZE];
+	enum dim { WDTH, HGHT };
+		
+	w3m_get_img_size = malloc(strlen(filename) +
+							  strlen(w3mimg) +
+							  strlen("echo -e '5;' | ") +
+							  1);
 
 	sprintf(w3m_get_img_size, "echo -e '5;%s' | %s", filename, w3mimg);
 
-	/* TODO: Switch to popen */
-	system(w3m_get_img_size);
-
 	/* Gouge out the width and height from w3mimgdisplay's output */
+	w3mpipe = popen(w3m_get_img_size, "r");
+	fgets(w3mbuf, MY_BUFSIZE, w3mpipe);
+	pclose(w3mpipe);
+
+	
 
 	free(w3mimg);
 	free(w3m_get_img_size);
