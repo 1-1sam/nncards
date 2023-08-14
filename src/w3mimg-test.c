@@ -21,7 +21,7 @@ struct image {
 };
 
 static char*
-_get_w3mimg_lib() {
+_get_w3mimg_lib(void) {
 
 	char* rtrn_str;
 	char* w3mimg_libs[5] = {
@@ -105,16 +105,21 @@ _get_image_info(char* filename) {
 }
 
 static double
-_get_scale_mult(struct image image) {
+_get_scale_div(struct image image) {
 
 	double rtrn_mult;
-	int tw = tb_width();
-	int th = tb_height();
+	//int tw = tb_width();
+	//int th = tb_height();
+	int tw = 80;
+	int th = 25;
 
+	if (th <= 8 || tw <= 4)
+		return -1;
+		
 	if (tw >= th)
-		rtrn_mult = (th - 8) / image.h;	
-	else if (tw < th)
-		rtrn_mult = (tw - 4) / image.w;
+		rtrn_mult = image.w / (tw - 4);
+	else
+		rtrn_mult = image.h / (th - 4);
 
 	return rtrn_mult;
 
@@ -129,8 +134,8 @@ draw_w3mimg(char* filename) {
 		return -1;
 
 	char* w3mimglib = _get_w3mimg_lib();
-	char* w3mimg_draw;
-	double scale_mult = _get_scale_mult(img);
+	char* w3mimg_comm;
+	double scale_mult = _get_scale_div(img);
 
 	free(w3mimglib);
 	return 0;
@@ -141,9 +146,7 @@ main(int argc, char** argv) {
 
 	struct image img = _get_image_info(argv[1]);
 
-	tb_init();
-
-	tb_shutdown();
+	printf("Mult: %lf\n", _get_scale_div(img));
 
 	/*
 	tb_init();
