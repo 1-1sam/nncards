@@ -8,8 +8,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define TB_IMPL
-#include "termbox.h"
+#include "tui.h"
 
 #define MY_BUFSIZE 100
 
@@ -154,10 +153,18 @@ _get_termsize(void) {
 static double
 _get_w3m_draw_mult(struct image img) {
 
-	struct termsize termsize = _get_termsize();
+	struct termsize ts = _get_termsize();
+	double rtrn;
 
-	
+	if (img.h >= img.w)
+		rtrn = (double) (ts.pixh - (8 * (ts.pixh / ts.lines))) / img.h;
+	else
+		rtrn = (double) (ts.pixw - (6 * (ts.pixw / ts.cols))) / img.w;
 
+	if (rtrn <= 0)
+		return -1;
+
+	return rtrn;
 
 }
 
@@ -165,16 +172,39 @@ int
 draw_w3mimg(char* filename) {
 
 	struct image img = _get_image_info(filename);
-
 	if (img.status == -1)
 		return -1;
+		
+	double mult = _get_w3m_draw_mult(img);
+	if (mult == -1) {
+		fprintf(stderr, "Cannot draw image; terminal too small\n");
+		return -1;
+	}
 
-	struct termsize termsize = _get_termsize();
-	char* w3mingbin = _get_w3mimgbin();
+	struct termsize ts = _get_termsize();
+	char* w3mimgbin = _get_w3mimgbin();
 	char* w3mimg_comm;
-	double mult;
+	char intbuf[MY_BUFSIZE];
+	int spixw = img.w * mult;
+	int spixh = img.h * mult;
+	int xoff = (ts.pixw / 2) - (spixw / 2);
+	int yoff = (ts.pixh / 2) - (spixh / 2);
 
-	free(w3mingbin);
+	sprintf(intbuf, "%d%d%d%d", spixw, spixh, xoff, yoff);
+
+	w3mimg_comm = malloc(strlen("echo -e '0;1;;;;;;;;;;\\n4;\\n3;' | ") +
+						 strlen(intbuf) +
+						 strlen(filename) +
+						 strlen(w3mimgbin) +
+						 1);
+
+	sprintf(w3mimg_comm, "echo -e '0;1;%d;%d;%d;%d;;;;;%s\\n4;\\n3;' | %s",
+			xoff, yoff, spixw, spixh, filename, w3mimgbin);
+
+	system(w3mimg_comm);
+
+	free(w3mimg_comm);
+	free(w3mimgbin);
 	return 0;
 }
 
@@ -183,7 +213,14 @@ main(int argc, char** argv) {
 
 	tb_init();
 
-	struct image img = _get_image_info(argv[1]);
+	struct tb_event ev;
+
+	tui_draw_card("");
+	draw_w3mimg(argv[1]);
+
+	tb_poll_event(&ev);
+
+	tb_shutdown();
 
 	/*
 	tb_init();
