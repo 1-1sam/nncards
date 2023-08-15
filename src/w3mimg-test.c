@@ -20,11 +20,18 @@ struct image {
 	int status;
 };
 
+struct termsize {
+	int pixw;
+	int pixh;
+	int cols;
+	int lines;
+};
+
 static char*
-_get_w3mimg_lib(void) {
+_get_w3mimgbin(void) {
 
 	char* rtrn_str;
-	char* w3mimg_libs[5] = {
+	char* w3mimgbins[] = {
 		"/usr/lib/w3m/w3mimgdisplay",
     	"/usr/libexec/w3m/w3mimgdisplay",
     	"/usr/lib64/w3m/w3mimgdisplay",
@@ -32,10 +39,10 @@ _get_w3mimg_lib(void) {
     	"/usr/local/libexec/w3m/w3mimgdisplay"
 	};
 
-	for (int i = 0; i < 5; i++) {
-		if (fopen(w3mimg_libs[i], "r") != NULL) {
-			rtrn_str = malloc(strlen(w3mimg_libs[i]) + 1);
-			strcpy(rtrn_str, w3mimg_libs[i]);
+	for (char** p = w3mimgbins; *p; p++) {
+		if (fopen(*p, "r") != NULL) {
+			rtrn_str = malloc(strlen(*p) + 1);
+			strcpy(rtrn_str, *p);
 			return rtrn_str;
 		}
 	}
@@ -47,10 +54,10 @@ _get_w3mimg_lib(void) {
 static struct image
 _get_image_info(char* filename) {
 
-	char* w3mimglib = _get_w3mimg_lib();
+	char* w3mingbin = _get_w3mimgbin();
 	struct image rtrn_img;
 
-	if (w3mimglib == NULL) {
+	if (w3mingbin == NULL) {
 		rtrn_img.status = -1;
 		return rtrn_img;
 	}
@@ -65,11 +72,11 @@ _get_image_info(char* filename) {
 	rtrn_img.filename = filename;
 
 	w3m_get_img_size = malloc(strlen(filename) +
-							  strlen(w3mimglib) +
+							  strlen(w3mingbin) +
 							  strlen("echo -e '5;' | ") +
 							  1);
 
-	sprintf(w3m_get_img_size, "echo -e '5;%s' | %s", filename, w3mimglib);
+	sprintf(w3m_get_img_size, "echo -e '5;%s' | %s", filename, w3mingbin);
 
 	/* Gouge out the width and height from w3mimgdisplay's output */
 	w3mpipe = popen(w3m_get_img_size, "r");
@@ -82,14 +89,12 @@ _get_image_info(char* filename) {
 		return rtrn_img;
 	}
 
-	/* Get width */
 	for (db = dimbuf; isdigit(*wb); wb++, db++)
 		*db = *wb;
 	*db = '\0';
 	rtrn_img.w = atoi(dimbuf);
 	wb++;
 
-	/* Get height */
 	memset(dimbuf, 0, MY_BUFSIZE / 2);
 	for (db = dimbuf; isdigit(*wb); wb++, db++)
 		*db = *wb;
@@ -98,30 +103,61 @@ _get_image_info(char* filename) {
 
 	rtrn_img.status = 0;
 	
-	free(w3mimglib);
+	free(w3mingbin);
 	free(w3m_get_img_size);
 	return rtrn_img;
 
 }
 
+static struct termsize
+_get_termsize(void) {
+
+	/* Use w3mimgdisplay -test to get terminal width and height */
+
+	struct termsize rtrn_term;
+	char* w3mimgbin = _get_w3mimgbin();
+	char* w3mimg_test;
+	FILE* w3mpipe;
+	char w3mbuf[MY_BUFSIZE];
+	char dimbuf[MY_BUFSIZE / 2];
+	char* wb = w3mbuf;
+	char* db;
+
+	w3mimg_test = malloc(strlen(w3mimgbin) + strlen(" -test") + 1);
+	sprintf(w3mimg_test, "%s -test", w3mimgbin);
+
+	w3mpipe = popen(w3mimg_test, "r");
+	fgets(w3mbuf, MY_BUFSIZE, w3mpipe);
+	pclose(w3mpipe);
+
+	for (db = dimbuf; isdigit(*wb); wb++, db++)
+		*db = *wb;
+	*db = '\0';
+	rtrn_term.pixw = atoi(dimbuf);
+	wb++;
+
+	memset(dimbuf, 0, MY_BUFSIZE / 2);
+	for (db = dimbuf; isdigit(*wb); wb++, db++)
+		*db = *wb;
+	*db = '\0';
+	rtrn_term.pixh = atoi(dimbuf);	
+
+	rtrn_term.cols = tb_width();
+	rtrn_term.lines = tb_height();
+
+	free(w3mimgbin);
+	free(w3mimg_test);
+	return rtrn_term;
+
+}
+
 static double
-_get_scale_div(struct image image) {
+_get_w3m_draw_mult(struct image img) {
 
-	double rtrn_mult;
-	//int tw = tb_width();
-	//int th = tb_height();
-	int tw = 80;
-	int th = 25;
+	struct termsize termsize = _get_termsize();
 
-	if (th <= 8 || tw <= 4)
-		return -1;
-		
-	if (tw >= th)
-		rtrn_mult = image.w / (tw - 4);
-	else
-		rtrn_mult = image.h / (th - 4);
+	
 
-	return rtrn_mult;
 
 }
 
@@ -133,20 +169,21 @@ draw_w3mimg(char* filename) {
 	if (img.status == -1)
 		return -1;
 
-	char* w3mimglib = _get_w3mimg_lib();
+	struct termsize termsize = _get_termsize();
+	char* w3mingbin = _get_w3mimgbin();
 	char* w3mimg_comm;
-	double scale_mult = _get_scale_div(img);
+	double mult;
 
-	free(w3mimglib);
+	free(w3mingbin);
 	return 0;
 }
 
 int
 main(int argc, char** argv) {
 
-	struct image img = _get_image_info(argv[1]);
+	tb_init();
 
-	printf("Mult: %lf\n", _get_scale_div(img));
+	struct image img = _get_image_info(argv[1]);
 
 	/*
 	tb_init();
