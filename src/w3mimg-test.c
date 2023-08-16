@@ -154,12 +154,18 @@ static double
 _get_w3m_draw_mult(struct image img) {
 
 	struct termsize ts = _get_termsize();
+	struct termsize cs = { /* Card size */
+		.lines = ts.lines - 8,
+		.cols = ts.cols - 6,
+		.pixh = ts.pixh - (8 * (ts.pixh / ts.lines)),
+		.pixw = ts.pixw - (6 * (ts.pixw / ts.cols))
+	};
 	double rtrn;
 
-	if (img.h >= img.w)
-		rtrn = (double) (ts.pixh - (8 * (ts.pixh / ts.lines))) / img.h;
-	else
-		rtrn = (double) (ts.pixw - (6 * (ts.pixw / ts.cols))) / img.w;
+	rtrn = (double) cs.pixh / img.h;
+
+	if ((double) img.w * rtrn > cs.pixw)
+		rtrn = (double) cs.pixw / img.w;
 
 	if (rtrn <= 0)
 		return -1;
