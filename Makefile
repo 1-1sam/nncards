@@ -2,9 +2,8 @@ cflags := -std=c99 -Wall -g -O2 -D_XOPEN_SOURCE -D_DEFAULT_SOURCE $(CFLAGS)
 PREFIX ?= /usr
 BINDIR ?= /bin
 
-export cflags
-
 build:
+	export cflags
 	make -C src
 
 install: src/nncards
