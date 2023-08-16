@@ -32,10 +32,10 @@ _get_w3mimgbin(void) {
 	char* rtrn_str;
 	char* w3mimgbins[] = {
 		"/usr/lib/w3m/w3mimgdisplay",
-    	"/usr/libexec/w3m/w3mimgdisplay",
-    	"/usr/lib64/w3m/w3mimgdisplay",
-    	"/usr/libexec64/w3m/w3mimgdisplay",
-    	"/usr/local/libexec/w3m/w3mimgdisplay"
+		"/usr/libexec/w3m/w3mimgdisplay",
+		"/usr/lib64/w3m/w3mimgdisplay",
+		"/usr/libexec64/w3m/w3mimgdisplay",
+		"/usr/local/libexec/w3m/w3mimgdisplay"
 	};
 
 	for (char** p = w3mimgbins; *p; p++) {

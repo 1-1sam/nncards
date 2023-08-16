@@ -4,10 +4,10 @@ BINDIR ?= /bin
 
 export cflags
 
-build: src/Makefile
+build:
 	make -C src
 
-install:
+install: src/nncards
 	install -v -d $(DESTDIR)$(PREFIX)$(BINDIR)
 	install -v -m 755 src/nncards $(DESTDIR)$(PREFIX)$(BINDIR)
 
