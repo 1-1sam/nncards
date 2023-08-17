@@ -1,11 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define TB_IMPL
 #include "termbox.h"
 
+#include "w3mimg.h"
+
 static void
-_card_print(char* str) {
+_text_print(char* str) {
 
 	int w = tb_width();
 	int h = tb_height();
@@ -26,6 +29,38 @@ _card_print(char* str) {
 
 	} while (line[linelen - 1]);
 
+}
+
+static void
+_image_print(char* str) {
+
+	char* imgnam = str + 2;
+	char* errmes;
+
+	switch (draw_w3mimg(imgnam)) {
+		case ERR_NOW3M:
+			_text_print("Could not find w3mimgdisplay");
+			break;
+		case ERR_NOFILE:
+			errmes = malloc(strlen("Cannot open ") +
+							strlen(imgnam) + 1);
+			sprintf(errmes, "Cannot open %s", imgnam);
+			_text_print(errmes);
+			free(errmes);
+			break;
+		case ERR_BADIMG:
+			errmes = malloc(strlen("w3m cannot read ") +
+							strlen(imgnam) + 1);
+			sprintf(errmes, "w3m cannot read %s", imgnam);
+			_text_print(errmes);
+			free(errmes);
+			break;
+		case ERR_BADWIN:
+			_text_print("Terminal window too small to display images");
+			break;
+		default:
+			break;
+	}
 }
 
 void
@@ -56,7 +91,12 @@ tui_draw_card(char* str) {
 	for (int i = 3; i < h - 3; i++)
 		tb_set_cell(1, i, 0x2502, 0, 0);
 
-	_card_print(str);
+	tb_present(); /* Present the window before w3m potentially loads an image */
+
+	if (str[0] == '%' && str[1] == '%')
+		_image_print(str);
+	else
+		_text_print(str);
 
 	tb_present();
 
@@ -72,4 +112,3 @@ tui_draw_info(char* filename, int currcard, int cardnum) {
 	tb_present();
 
 }
-

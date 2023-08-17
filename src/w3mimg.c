@@ -1,7 +1,3 @@
-/*
- * TESTING POTENTIAL W3M-IMG SUPPORT. THIS FILE IS NEVER USED IN NNCARDS.
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,6 +6,11 @@
 #include <sys/ioctl.h>
 
 #define MY_BUFSIZE 100
+
+#define ERR_NOW3M -1
+#define ERR_NOFILE -2
+#define ERR_BADIMG -3
+#define ERR_BADWIN -4
 
 struct image {
 	char* filename;
@@ -45,7 +46,6 @@ _get_w3mimgbin(void) {
 		}
 	}
 
-	fprintf(stderr, "Could not find w3mimgdisplay\n");
 	return NULL;
 }
 
@@ -54,12 +54,6 @@ _get_image_info(char* filename) {
 
 	char* w3mingbin = _get_w3mimgbin();
 	struct image rtrn_img;
-
-	if (w3mingbin == NULL) {
-		rtrn_img.status = -1;
-		return rtrn_img;
-	}
-
 	char* w3m_get_img_size;
 	FILE* w3mpipe;
 	char w3mbuf[MY_BUFSIZE];
@@ -82,7 +76,6 @@ _get_image_info(char* filename) {
 	pclose(w3mpipe);
 
 	if (*wb == '\n') {
-		fprintf(stderr, "w3m could not read %s\n", filename);
 		rtrn_img.status = -1;
 		return rtrn_img;
 	}
@@ -194,18 +187,19 @@ _get_w3m_draw_mult(struct image img) {
 int
 draw_w3mimg(char* filename) {
 
+	char* w3mimgbin = _get_w3mimgbin();
+	if (w3mimgbin == NULL)
+		return ERR_NOW3M;
+
 	struct image img = _get_image_info(filename);
 	if (img.status == -1)
-		return -1;
+		return ERR_BADIMG;
 
 	double mult = _get_w3m_draw_mult(img);
-	if (mult == -1) {
-		fprintf(stderr, "Cannot draw image; terminal window too small\n");
-		return -1;
-	}
+	if (mult == -1)
+		return ERR_BADWIN;
 
 	struct termsize ts = _get_termsize();
-	char* w3mimgbin = _get_w3mimgbin();
 	char* w3mimg_comm;
 	char intbuf[MY_BUFSIZE];
 	int spixw = img.w * mult;
@@ -215,13 +209,13 @@ draw_w3mimg(char* filename) {
 
 	sprintf(intbuf, "%d%d%d%d", spixw, spixh, xoff, yoff);
 
-	w3mimg_comm = malloc(strlen("echo -e '0;1;;;;;;;;;;\\n4;\\n3;' | ") +
+	w3mimg_comm = malloc(strlen("echo -e '0;1;;;;;;;;;;\\n0;\\n0;' | ") +
 						 strlen(intbuf) +
 						 strlen(filename) +
 						 strlen(w3mimgbin) +
 						 1);
 
-	sprintf(w3mimg_comm, "echo -e '0;1;%d;%d;%d;%d;;;;;%s\\n4;\\n3;' | %s",
+	sprintf(w3mimg_comm, "echo -e '0;1;%d;%d;%d;%d;;;;;%s;\\n0;\\n0;' | %s",
 			xoff, yoff, spixw, spixh, filename, w3mimgbin);
 
 	system(w3mimg_comm);
@@ -229,13 +223,4 @@ draw_w3mimg(char* filename) {
 	free(w3mimg_comm);
 	free(w3mimgbin);
 	return 0;
-}
-
-int
-main(int argc, char** argv) {
-
-	printf("Width: %d\nHeight: %d\n", _get_termcols(), _get_termlines());
-
-	return 0;
-
 }
