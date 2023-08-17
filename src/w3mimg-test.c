@@ -7,8 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
-
-#include "tui.h"
+#include <sys/ioctl.h>
 
 #define MY_BUFSIZE 100
 
@@ -101,10 +100,32 @@ _get_image_info(char* filename) {
 	rtrn_img.h = atoi(dimbuf);
 
 	rtrn_img.status = 0;
-	
+
 	free(w3mingbin);
 	free(w3m_get_img_size);
 	return rtrn_img;
+
+}
+
+static int
+_get_termcols(void) {
+
+	struct winsize ws;
+
+	ioctl(STDIN_FILENO, TIOCGWINSZ, &ws);
+
+	return ws.ws_col;
+
+}
+
+static int
+_get_termlines(void) {
+
+	struct winsize ws;
+
+	ioctl(STDIN_FILENO, TIOCGWINSZ, &ws);
+
+	return ws.ws_row;
 
 }
 
@@ -139,10 +160,10 @@ _get_termsize(void) {
 	for (db = dimbuf; isdigit(*wb); wb++, db++)
 		*db = *wb;
 	*db = '\0';
-	rtrn_term.pixh = atoi(dimbuf);	
+	rtrn_term.pixh = atoi(dimbuf);
 
-	rtrn_term.cols = tb_width();
-	rtrn_term.lines = tb_height();
+	rtrn_term.cols = _get_termcols();
+	rtrn_term.lines = _get_termlines();
 
 	free(w3mimgbin);
 	free(w3mimg_test);
@@ -154,18 +175,14 @@ static double
 _get_w3m_draw_mult(struct image img) {
 
 	struct termsize ts = _get_termsize();
-	struct termsize cs = { /* Card size */
-		.lines = ts.lines - 8,
-		.cols = ts.cols - 6,
-		.pixh = ts.pixh - (8 * (ts.pixh / ts.lines)),
-		.pixw = ts.pixw - (6 * (ts.pixw / ts.cols))
-	};
+	int csh = ts.pixh - (8 * (ts.pixh / ts.lines));
+	int csw = ts.pixw - (6 * (ts.pixw / ts.cols));
 	double rtrn;
 
-	rtrn = (double) cs.pixh / img.h;
+	rtrn = (double) csh / img.h;
 
-	if ((double) img.w * rtrn > cs.pixw)
-		rtrn = (double) cs.pixw / img.w;
+	if ((double) img.w * rtrn > csw)
+		rtrn = (double) csw / img.w;
 
 	if (rtrn <= 0)
 		return -1;
@@ -180,10 +197,10 @@ draw_w3mimg(char* filename) {
 	struct image img = _get_image_info(filename);
 	if (img.status == -1)
 		return -1;
-		
+
 	double mult = _get_w3m_draw_mult(img);
 	if (mult == -1) {
-		fprintf(stderr, "Cannot draw image; terminal too small\n");
+		fprintf(stderr, "Cannot draw image; terminal window too small\n");
 		return -1;
 	}
 
@@ -217,23 +234,7 @@ draw_w3mimg(char* filename) {
 int
 main(int argc, char** argv) {
 
-	tb_init();
-
-	struct tb_event ev;
-
-	tui_draw_card("");
-	draw_w3mimg(argv[1]);
-
-	tb_poll_event(&ev);
-
-	tb_shutdown();
-
-	/*
-	tb_init();
-
-	int w = tb_width();
-	int h = tb_height();
-	*/
+	printf("Width: %d\nHeight: %d\n", _get_termcols(), _get_termlines());
 
 	return 0;
 
