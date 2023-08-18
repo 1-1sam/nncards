@@ -4,6 +4,7 @@
 #define TB_IMPL
 #include "termbox.h"
 
+/* TODO: Find cleaner way to do this. */
 static void
 _text_print(char* str) {
 
