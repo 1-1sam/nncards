@@ -23,7 +23,8 @@ _text_print(char* str) {
 			line[i] = str[str_i];
 		line[linelen] = '\0';
 
-		tb_printf((w / 2) - (strlen(line) / 2), (h / 2) + yoffset++, 0, 0, "%s", line);
+		tb_printf((w / 2) - (strlen(line) / 2), (h / 2) + yoffset++,
+				  0, 0, "%s", line);
 
 	} while (line[linelen - 1]);
 
