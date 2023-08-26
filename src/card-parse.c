@@ -55,10 +55,7 @@ cp_get_cards(struct card* cards, char* filename) {
 
 			if (*l == '\n'
 				&& (line_state == TERM || line_state == WHITESPACE)) {
-				fprintf(stderr,
-						"%s: Cannot be parsed, ",
-						"verify the file is formatted correctly\n",
-						filename);
+				fprintf(stderr, "%s: Cannot parse\n", filename);
 				return -1;
 			}
 
