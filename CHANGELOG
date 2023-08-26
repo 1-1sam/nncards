@@ -1,1 +1,4 @@
 1.0 -> ?.?
+Changes:
+  - Lines that do not contain valid terms or definitions no longer cause
+    nncards to throw an error and exit, they are now just ignored.
