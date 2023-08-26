@@ -37,51 +37,30 @@ int
 cp_get_cards(struct card* cards, char* filename) {
 
 	FILE* cardfile = fopen(filename, "r");
-	int card_count = 0;
+	int cc = 0;
 	char line[MY_BUFSIZE];
-	enum line_state { TERM, DEFINITION, WHITESPACE } line_state;
+	char* l;
 
 	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
 
-		char *l = line;
-		line_state = TERM;
-		int ti = 0;
-		int di = 0;
+		l = line;
 
 		if (*l == '#' || *l == '\n')
 			continue;
 
-		for (; *l; l++) {
+		if ((l = strchr(line, ':')) == NULL)
+			continue;
 
-			if (*l == '\n'
-				&& (line_state == TERM || line_state == WHITESPACE)) {
-				fprintf(stderr, "%s: Cannot parse\n", filename);
-				return -1;
-			}
+		*(strchr(line, '\n')) = '\0';
 
-			if (di >= CARD_STR_MAX || ti >= CARD_STR_MAX) {
-				fprintf(stderr,
-						"%s: Term or definition exceeded 254 character limit\n",
-						filename);
-				return -1;
-			}
+		strcpy(cards[cc].side2, strtok(line, ":"));
 
-			if (*l == ':' && line_state == TERM) {
-				cards[card_count].side2[ti] = '\0';
-				line_state = WHITESPACE;
-			} else if (!isblank(*l) && line_state == WHITESPACE) {
-				line_state = DEFINITION;
-			} else if (*l == '\n') {
-				cards[card_count].side1[di] = '\0';
-				break;
-			}
+		while (isblank(*(++l)))
+			;
 
-			if (line_state == TERM)
-				cards[card_count].side2[ti++] = *l;
-			else if (line_state == DEFINITION)
-				cards[card_count].side1[di++] = *l;
-		}
-		card_count++;
+		strcpy(cards[cc].side1, l);
+
+		cc++;
 	}
 
 	fclose(cardfile);
