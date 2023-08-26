@@ -65,7 +65,11 @@ cp_get_cards(struct card* cards, char* filename) {
 
 	fclose(cardfile);
 
+	if (cc == 0)
+		return -1;
+
 	return 0;
+
 }
 
 int

@@ -88,8 +88,10 @@ nnc_main_loop(struct nncards nncards) {
 	int currcard = 0;
 	char* currstr;
 
-	if (cp_get_cards(cards, nncards.cardfile) == -1)
+	if (cp_get_cards(cards, nncards.cardfile) == -1) {
+		fprintf(stderr, "%s: Not a valid card file\n", nncards.cardfile);
 		return -1;
+	}
 
 	if (nncards.opt_first_side == TERM)
 		cp_side_swap(cards, cardnum);
