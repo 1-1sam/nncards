@@ -53,13 +53,19 @@ cp_get_cards(struct card* cards, char* filename) {
 
 		for (; *l; l++) {
 
-			if (*l == '\n' && (line_state == TERM || line_state == WHITESPACE)) {
-				fprintf(stderr, "%s: Cannot be parsed, verify the file is formatted correctly\n", filename);
+			if (*l == '\n'
+				&& (line_state == TERM || line_state == WHITESPACE)) {
+				fprintf(stderr,
+						"%s: Cannot be parsed, ",
+						"verify the file is formatted correctly\n",
+						filename);
 				return -1;
 			}
 
 			if (di >= CARD_STR_MAX || ti >= CARD_STR_MAX) {
-				fprintf(stderr, "%s: Term or definition exceeded 254 character limit\n", filename);
+				fprintf(stderr,
+						"%s: Term or definition exceeded 254 character limit\n",
+						filename);
 				return -1;
 			}
 
