@@ -21,7 +21,7 @@ formatting
 .Nm
 files:
 .Bl -bullet
-.It 
+.It
 Each non-blank or non-comment line must contain a term and definition,
 seperated by a colon (:) character. Any whitespace between the colon and
 definition is ignored. Terms or definitions can contain a maximum of 254
@@ -33,10 +33,7 @@ Lines starting with a hash (#) are interpreted as comments and ignored.
 .It
 Blank lines are ignored.
 .It
-Lines that do not contain valid terms/definitions and are not comments will
-cause
-.Nm
-to throw a format error.
+Lines that do not contain valid terms/definitions are ignored.
 .El
 .Pp
 .Em example.cards
