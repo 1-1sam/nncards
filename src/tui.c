@@ -4,7 +4,7 @@
 #define TB_IMPL
 #include "termbox.h"
 
-/* TODO: Find cleaner way to do this. */
+/* TODO: Fix memory leak that occurs at the end of some line wraps */
 static void
 _text_print(char* str) {
 
@@ -12,19 +12,19 @@ _text_print(char* str) {
 	int h = tb_height();
 	int linelen = w - 6;
 	int yoffset = -(strlen(str) / linelen) / 2;
-	int str_i = 0;
+	char* p = str;
 
 	char line[linelen + 1];
 
 	do {
 		memset(line, 0, linelen);
 
-		for (int i = 0; i < linelen && str[str_i]; i++, str_i++)
-			line[i] = str[str_i];
-		line[linelen] = '\0';
+		strncpy(line, p, linelen);
 
 		tb_printf((w / 2) - (strlen(line) / 2), (h / 2) + yoffset++,
 				  0, 0, "%s", line);
+
+		p += linelen;
 
 	} while (line[linelen - 1]);
 
