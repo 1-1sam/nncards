@@ -51,14 +51,19 @@ cp_get_cards(struct card* cards, char* filename) {
 		if ((l = strchr(line, ':')) == NULL)
 			continue;
 
-		*(strchr(line, '\n')) = '\0';
+		strncpy(cards[cc].side2, strtok(line, ":"), CARD_STR_MAX - 1);
 
-		strcpy(cards[cc].side2, strtok(line, ":"));
+		cards[cc].side2[CARD_STR_MAX - 1] = '\0';
 
 		while (isblank(*(++l)))
 			;
 
-		strcpy(cards[cc].side1, l);
+		strncpy(cards[cc].side1, l, CARD_STR_MAX - 1);
+
+		if (strchr(cards[cc].side1, '\n') != NULL)
+			*(strchr(cards[cc].side1, '\n')) = '\0';
+		else
+			cards[cc].side1[CARD_STR_MAX - 1] = '\0';
 
 		cc++;
 	}
