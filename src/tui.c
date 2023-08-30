@@ -17,9 +17,8 @@ _text_print(char* str) {
 	char line[linelen + 1];
 
 	do {
-		memset(line, 0, linelen);
-
 		strncpy(line, p, linelen);
+		line[linelen] = '\0';
 
 		tb_printf((w / 2) - (strlen(line) / 2), (h / 2) + yoffset++,
 				  0, 0, "%s", line);
