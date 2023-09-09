@@ -2,3 +2,11 @@
 Changes:
   - Lines that do not contain valid terms or definitions no longer cause
     nncards to throw an error and exit, they are now just ignored.
+  - More key controls:
+      Right Arrow, l: Next card
+      Left Arrow, j: Previous card
+      Space, Up/Down Arrow: Flip card
+      Page Up: First card
+      Page Down: Last card
+      Escape: Quit nncards
+  - Added -c option: Start at nth card (n being the given integer)
