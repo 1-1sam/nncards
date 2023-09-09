@@ -29,7 +29,7 @@ Consult the manual for further documentation.
 
 ## Building
 
-The only thing you need to build nncards is a C compiler.
+The only thing you need to build nncards is a C compiler and make.
 
 ```bash
 make
