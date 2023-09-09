@@ -4,6 +4,13 @@
 #include "tui.h"
 #include "card-parse.h"
 
+#define NNC_NEXT 0
+#define NNC_PREV 1
+#define NNC_FLIP 2
+#define NNC_LAST 3
+#define NNC_FRST 4
+#define NNC_QUIT 5
+
 struct nncards {
 	enum run { RUN, NORUN } run;
 	char* cardfile;
@@ -29,6 +36,37 @@ static void
 _print_version(void) {
 
 	printf("nncards - 1.0\n");
+
+}
+
+static int
+_event_parse(struct tb_event ev) {
+
+	switch (ev.ch) {
+		case 'c': return NNC_NEXT;
+		case 'l': return NNC_NEXT;
+		case 'z': return NNC_PREV;
+		case 'h': return NNC_PREV;
+		case 'x': return NNC_FLIP;
+		case ' ': return NNC_FLIP;
+		case 'd': return NNC_LAST;
+		case 'a': return NNC_FRST;
+		case 'q': return NNC_QUIT;
+		default: break;
+	}
+
+	switch (ev.key) {
+		case TB_KEY_ARROW_RIGHT: return NNC_NEXT;
+		case TB_KEY_ARROW_LEFT: return NNC_PREV;
+		case TB_KEY_ARROW_UP: return NNC_FLIP;
+		case TB_KEY_ARROW_DOWN: return NNC_FLIP;
+		case TB_KEY_PGDN: return NNC_LAST;
+		case TB_KEY_PGUP: return NNC_FRST;
+		case TB_KEY_ESC: return NNC_QUIT;
+		default: break;
+	}
+
+	return -1;
 
 }
 
@@ -111,33 +149,26 @@ nnc_main_loop(struct nncards nncards) {
 
 		tb_poll_event(&ev);
 
-		switch (ev.ch) {
-			/* Next card */
-			case '?':
-			case 'c':
+		switch (_event_parse(ev)) {
+			case NNC_NEXT:
 				if (currcard < cardnum - 1)
 					currstr = cards[++currcard].side1;
 				break;
-			/* Previous card */
-			case 'z':
+			case NNC_PREV:
 				if (currcard > 0)
 					currstr = cards[--currcard].side1;
 				break;
-			/* Flip card */
-			case 'x':
+			case NNC_FLIP:
 				currstr = (currstr == cards[currcard].side1)
 					? cards[currcard].side2 : cards[currcard].side1;
 				break;
-			/* Go to beginning card */
-			case 'a':
+			case NNC_FRST:
 				currstr = cards[currcard = 0].side1;
 				break;
-			/* Go to final card */
-			case 'd':
+			case NNC_LAST:
 				currstr = cards[currcard = cardnum - 1].side1;
 				break;
-			/* Quit */
-			case 'q':
+			case NNC_QUIT:
 				tb_shutdown();
 				return 0;
 		}
