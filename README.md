@@ -16,14 +16,14 @@ example.cards shows how one could format a card file.
 
 nncards is controlled through various key commands.
 
-| Key | Action               |
-| --- | ---------------------|
-| c   | Next card            |
-| z   | Previous card        |
-| x   | Flip card            |
-| d   | Go to final card     |
-| a   | Go to beginning card |
-| q   | Quit nncards         |
+| Key                     | Action               |
+| ----------------------- | -------------------- |
+| Right Arrow, l, c       | Next card            |
+| Left Arrow, h, z        | Previous card        |
+| Space, Up/Down Arrow, x | Flip card            |
+| Page Down, d            | Go to final card     |
+| Page Up, a              | Go to beginning card |
+| Escape, q               | Quit nncards         |
 
 Consult the manual for further documentation.
 
