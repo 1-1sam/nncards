@@ -16,19 +16,21 @@ struct nncards {
 	char* cardfile;
 	enum opt_first_side { TERM, DEFINITION } opt_first_side;
 	int opt_random;
+	int opt_initcard;
 };
 
 static void
 _print_help(void) {
 
 	printf("nncards - 1.0\n");
-	printf("Usage: nncards [-trhv] file\n");
+	printf("Usage: nncards [-trhv] [-c n] file\n");
 	printf("\n");
 	printf("Options:\n");
-	printf("	-t	Show terms first rather than definitions.\n");
-	printf("	-r	Randomize the order that the cards are shown in.\n");
-	printf("	-h	Print this help message.\n");
-	printf("	-v	Print program version.\n");
+	printf("	-r    Randomize the order that the cards are shown in.\n");
+	printf("	-t    Show terms first rather than definitions.\n");
+	printf("	-c n  Start at the nth card.\n");
+	printf("	-h    Print this help message.\n");
+	printf("	-v    Print program version.\n");
 
 }
 
@@ -77,18 +79,22 @@ nnc_init(int argc, char** argv) {
 		.run = RUN,
 		.cardfile = NULL,
 		.opt_first_side = DEFINITION,
-		.opt_random = 0
+		.opt_random = 0,
+		.opt_initcard = 0
 	};
 
 	int c;
 
-	while ((c = getopt(argc, argv, "trhv")) != -1) {
+	while ((c = getopt(argc, argv, "rtc:hv")) != -1) {
 		switch (c) {
+			case 'r':
+				nnc_return.opt_random = 1;
+				break;
 			case 't':
 				nnc_return.opt_first_side = TERM;
 				break;
-			case 'r':
-				nnc_return.opt_random = 1;
+			case 'c':
+				nnc_return.opt_initcard = atoi(optarg);
 				break;
 			case 'h':
 				nnc_return.run = NORUN;
@@ -123,7 +129,8 @@ nnc_main_loop(struct nncards nncards) {
 	int cardnum = cp_get_cardnum(nncards.cardfile);
 	struct card cards[cardnum];
 	struct tb_event ev;
-	int currcard = 0;
+	int currcard = (nncards.opt_initcard > 0 && nncards.opt_initcard <= cardnum)
+		? nncards.opt_initcard - 1 : 0;
 	char* currstr;
 
 	if (cp_get_cards(cards, nncards.cardfile) == -1) {

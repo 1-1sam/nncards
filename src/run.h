@@ -9,6 +9,7 @@ struct nncards {
 	char* cardfile;
 	enum opt_first_side { TERM, DEFINITION } opt_first_side;
 	int opt_random;
+	int opt_initcard;
 };
 
 struct nncards nnc_init(int argc, char** argv);
