@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm nncards
 .Op Fl trhv
+.Op Fl c Ar n
 .Ar file
 .Sh DESCRIPTION
 .Nm
@@ -25,7 +26,7 @@ files:
 Each non-blank or non-comment line must contain a term and definition,
 seperated by a colon (:) character. Any whitespace between the colon and
 definition is ignored. Terms or definitions can contain a maximum of 254
-characters. Here is how you would format a card line: 
+characters. Here is how you would format a card line:
 .Pp
 term1: Definition of term1.
 .It
@@ -54,10 +55,17 @@ is controlled through various keys:
 .Nm
 has the following options:
 .Bl -tag -width Ds
-.It Fl t
-Show terms first rather than definitions.
+.It Fl c Ar n
+Start at the
+.Ar nth
+card. If
+.Ar n
+is greater than the total number of cards, start at
+the first card.
 .It Fl r
 Randomize the order the cards appear in.
+.It Fl t
+Show terms first rather than definitions.
 .It Fl h
 Print help message.
 .It Fl v
