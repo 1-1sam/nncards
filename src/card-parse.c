@@ -33,6 +33,7 @@ cp_get_cardnum(char* filename) {
 
 }
 
+/* TODO: Replace found tabs with single spaces */
 int
 cp_get_cards(struct card* cards, char* filename) {
 
