@@ -178,6 +178,7 @@ nnc_main_loop(struct nncards nncards) {
 			case NNC_QUIT:
 				tb_shutdown();
 				return 0;
+			default: break;
 		}
 	}
 }
