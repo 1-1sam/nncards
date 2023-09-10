@@ -4,7 +4,6 @@
 #define TB_IMPL
 #include "termbox.h"
 
-/* TODO: Fix memory leak that occurs at the end of some line wraps */
 static void
 _text_print(char* str) {
 
