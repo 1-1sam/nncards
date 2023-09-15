@@ -10,6 +10,5 @@ struct card {
 
 int  cp_get_cardnum(char* filename);
 int  cp_get_cards(struct card* cards, char* filename);
-int  cp_open_test(char* filename);
 void cp_card_shuffle(struct card* cards, int cardnum);
 void cp_side_swap(struct card* cards, int cardnum);
