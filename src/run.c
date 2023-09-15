@@ -121,7 +121,7 @@ nnc_init(int argc, char** argv) {
 int
 nnc_main_loop(struct nncards nncards) {
 
-	if (cp_open_test(nncards.cardfile)) {
+	if (access(nncards.cardfile, R_OK)) {
 		fprintf(stderr, "%s: Cannot be opened\n", nncards.cardfile);
 		return -1;
 	}

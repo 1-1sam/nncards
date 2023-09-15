@@ -79,19 +79,6 @@ cp_get_cards(struct card* cards, char* filename) {
 
 }
 
-/* TODO: Remove this, use access() instead */
-int
-cp_open_test(char* filename) {
-
-	FILE* file = fopen(filename, "r");
-
-	if (file == NULL)
-		return -1;
-
-	return 0;
-
-}
-
 void
 cp_card_shuffle(struct card* cards, int cardnum) {
 
