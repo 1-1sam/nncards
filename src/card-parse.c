@@ -7,6 +7,7 @@
 #define MY_BUFSIZE 1024
 #define CARD_STR_MAX 255
 
+/* TODO: Look into allocating cards on heap */
 struct card {
 	char side1[CARD_STR_MAX]; /* By default, these are definitions */
 	char side2[CARD_STR_MAX]; /* By default, these are terms */
@@ -78,6 +79,7 @@ cp_get_cards(struct card* cards, char* filename) {
 
 }
 
+/* TODO: Remove this, use access() instead */
 int
 cp_open_test(char* filename) {
 
