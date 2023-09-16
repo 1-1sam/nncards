@@ -12,3 +12,4 @@ Changes:
   - Added -c option: Start at nth card (n being the given integer)
   - Cards are now stored on heap rather than stack.
   - There is no longer a 254 character limit on terms/definitions.
+  - Default make install PREFIX is now /usr/local rather than /usr.
