@@ -5,12 +5,10 @@
 #include <ctype.h>
 
 #define MY_BUFSIZE 1024
-#define CARD_STR_MAX 255
 
-/* TODO: Look into allocating cards on heap */
 struct card {
-	char side1[CARD_STR_MAX]; /* By default, these are definitions */
-	char side2[CARD_STR_MAX]; /* By default, these are terms */
+	char* side1;
+	char* side2;
 };
 
 int
@@ -34,85 +32,78 @@ cp_get_cardnum(char* filename) {
 
 }
 
-/* TODO: Replace found tabs with single spaces */
-int
-cp_get_cards(struct card* cards, char* filename) {
+struct card*
+cp_get_cards(char* filename, int cardnum) {
 
+	struct card* cards;
 	FILE* cardfile = fopen(filename, "r");
 	int cc = 0;
 	char line[MY_BUFSIZE];
-	char* l;
+	char* s1;
+	char* s2;
+
+	cards = malloc(sizeof(struct card) * cardnum);
 
 	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
 
-		l = line;
-
-		if (*l == '#' || *l == '\n')
+		if (line[0] == '#' || line[0] == '\n')
 			continue;
 
-		if ((l = strchr(line, ':')) == NULL)
+		*(strchr(line, '\n')) = '\0';
+
+		/* Getting side1 (the definition) */
+		if ((s1 = strchr(line, ':')) == NULL)
 			continue;
 
-		strncpy(cards[cc].side2, strtok(line, ":"), CARD_STR_MAX - 1);
-
-		cards[cc].side2[CARD_STR_MAX - 1] = '\0';
-
-		while (isblank(*(++l)))
+		while (isblank(*(++s1)))
 			;
 
-		strncpy(cards[cc].side1, l, CARD_STR_MAX - 1);
+		cards[cc].side1 = strdup(s1);
 
-		if (strchr(cards[cc].side1, '\n') != NULL)
-			*(strchr(cards[cc].side1, '\n')) = '\0';
-		else
-			cards[cc].side1[CARD_STR_MAX - 1] = '\0';
+		/* Getting side2 (the term) */
+		s2 = line;
 
-		cc++;
+		*(strchr(s2, ':')) = '\0';
+
+		cards[cc++].side2 = strdup(s2);
+
 	}
 
 	fclose(cardfile);
-
-	if (cc == 0)
-		return -1;
-
-	return 0;
+	return cards;
 
 }
 
 void
 cp_card_shuffle(struct card* cards, int cardnum) {
 
-	srand(time(NULL));
-
-	struct card tmpcards[cardnum];
-	memcpy(tmpcards, cards, sizeof(struct card) * cardnum);
-
+	struct card* tmpcards;
 	int r;
 
+	srand(time(NULL));
+
+	tmpcards = malloc(sizeof(struct card) * cardnum);
+	memcpy(tmpcards, cards, sizeof(struct card) * cardnum);
+
 	for (int i = 0, cardsleft = cardnum; cardsleft > 0; i++, cardsleft--) {
+
 		r = rand() % cardsleft;
 
 		cards[i] = tmpcards[r];
 		tmpcards[r] = tmpcards[cardsleft - 1];
 	}
+
+	free(tmpcards);
 }
 
 void
 cp_side_swap(struct card* cards, int cardnum) {
 
-	char tmpstr[CARD_STR_MAX];
+	char* tmpptr;
 
 	for (int i = 0; i < cardnum; i++) {
-
-		memset(tmpstr, 0, CARD_STR_MAX);
-		memcpy(tmpstr, cards[i].side2, CARD_STR_MAX);
-
-		memset(cards[i].side2, 0, CARD_STR_MAX);
-		memcpy(cards[i].side2, cards[i].side1, CARD_STR_MAX);
-
-		memset(cards[i].side1, 0, CARD_STR_MAX);
-		memcpy(cards[i].side1, tmpstr, CARD_STR_MAX);
-
+		tmpptr = cards[i].side1;
+		cards[i].side1 = cards[i].side2;
+		cards[i].side2 = tmpptr;
 	}
-
 }

@@ -72,6 +72,18 @@ _event_parse(struct tb_event ev) {
 
 }
 
+static void
+_burn_deck(struct card* deck, int cardnum) {
+
+	for (int i = 0; i < cardnum; i++) {
+		free(deck[i].side1);
+		free(deck[i].side2);
+	}
+
+	free(deck);
+
+}
+
 struct nncards
 nnc_init(int argc, char** argv) {
 
@@ -127,24 +139,26 @@ nnc_main_loop(struct nncards nncards) {
 	}
 
 	int cardnum = cp_get_cardnum(nncards.cardfile);
-	struct card cards[cardnum];
+	struct card* deck;
 	struct tb_event ev;
 	int currcard = (nncards.opt_initcard > 0 && nncards.opt_initcard <= cardnum)
 		? nncards.opt_initcard - 1 : 0;
 	char* currstr;
 
-	if (cp_get_cards(cards, nncards.cardfile) == -1) {
+	if (!cardnum) {
 		fprintf(stderr, "%s: Not a valid card file\n", nncards.cardfile);
 		return -1;
 	}
 
+	deck = cp_get_cards(nncards.cardfile, cardnum);
+
 	if (nncards.opt_first_side == TERM)
-		cp_side_swap(cards, cardnum);
+		cp_side_swap(deck, cardnum);
 
 	if (nncards.opt_random)
-		cp_card_shuffle(cards, cardnum);
+		cp_card_shuffle(deck, cardnum);
 
-	currstr = cards[currcard].side1;
+	currstr = deck[currcard].side1;
 
 	tb_init();
 
@@ -159,24 +173,25 @@ nnc_main_loop(struct nncards nncards) {
 		switch (_event_parse(ev)) {
 			case NNC_NEXT:
 				if (currcard < cardnum - 1)
-					currstr = cards[++currcard].side1;
+					currstr = deck[++currcard].side1;
 				break;
 			case NNC_PREV:
 				if (currcard > 0)
-					currstr = cards[--currcard].side1;
+					currstr = deck[--currcard].side1;
 				break;
 			case NNC_FLIP:
-				currstr = (currstr == cards[currcard].side1)
-					? cards[currcard].side2 : cards[currcard].side1;
+				currstr = (currstr == deck[currcard].side1)
+					? deck[currcard].side2 : deck[currcard].side1;
 				break;
 			case NNC_FRST:
-				currstr = cards[currcard = 0].side1;
+				currstr = deck[currcard = 0].side1;
 				break;
 			case NNC_LAST:
-				currstr = cards[currcard = cardnum - 1].side1;
+				currstr = deck[currcard = cardnum - 1].side1;
 				break;
 			case NNC_QUIT:
 				tb_shutdown();
+				_burn_deck(deck, cardnum);
 				return 0;
 			default: break;
 		}
