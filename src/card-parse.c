@@ -49,7 +49,12 @@ cp_get_cards(char* filename, int cardnum) {
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
 
+		/* The newline messes up the TUI rendering */
 		*(strchr(line, '\n')) = '\0';
+
+		/* Tabs mess up the TUI rendering, replace them with spaces */
+		for (int i = 0; line[i]; i++)
+			if (line[i] == '\t') line[i] = ' ';
 
 		/* Getting side1 (the definition) */
 		if ((s1 = strchr(line, ':')) == NULL)
