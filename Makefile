@@ -1,5 +1,5 @@
 cflags := -std=c99 -Wall -g -O2 -D_XOPEN_SOURCE -D_DEFAULT_SOURCE $(CFLAGS)
-PREFIX ?= /usr
+PREFIX ?= /usr/local
 BINDIR ?= /bin
 
 build:
