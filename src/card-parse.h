@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define CARD_STR_MAX 255
-
 struct card {
 	char* side1;
 	char* side2;
