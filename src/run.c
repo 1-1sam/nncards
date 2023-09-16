@@ -144,6 +144,7 @@ nnc_main_loop(struct nncards nncards) {
 	int currcard = (nncards.opt_initcard > 0 && nncards.opt_initcard <= cardnum)
 		? nncards.opt_initcard - 1 : 0;
 	char* currstr;
+	char* filename;
 
 	if (!cardnum) {
 		fprintf(stderr, "%s: Not a valid card file\n", nncards.cardfile);
@@ -158,6 +159,12 @@ nnc_main_loop(struct nncards nncards) {
 	if (nncards.opt_random)
 		cp_card_shuffle(deck, cardnum);
 
+
+	if ((filename = strrchr(nncards.cardfile, '/')) != NULL)
+		filename++;
+	else
+		filename = nncards.cardfile;
+
 	currstr = deck[currcard].side1;
 
 	tb_init();
@@ -166,7 +173,7 @@ nnc_main_loop(struct nncards nncards) {
 
 		tb_clear();
 		tui_draw_card(currstr);
-		tui_draw_info(nncards.cardfile, currcard + 1, cardnum);
+		tui_draw_info(filename, currcard + 1, cardnum);
 
 		tb_poll_event(&ev);
 
