@@ -13,3 +13,5 @@ Changes:
   - Cards are now stored on heap rather than stack.
   - There is no longer a 254 character limit on terms/definitions.
   - Default make install PREFIX is now /usr/local rather than /usr.
+  - Replace any tabs in the term/definition with spaces. Tabs cause Termbox's
+    TUI rendering to freak out.
