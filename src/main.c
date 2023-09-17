@@ -6,8 +6,7 @@ main(int argc, char** argv) {
 
 	struct nncards nncards = nnc_init(argc, argv);
 
-	/* Die if norun flag is set (help/version message, no file passed). */
-	if (nncards.run == NORUN)
+	if (!nncards.run)
 		return 0;
 
 	nnc_main_loop(nncards);

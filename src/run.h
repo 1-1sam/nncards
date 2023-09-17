@@ -4,12 +4,15 @@
 #include "tui.h"
 #include "card-parse.h"
 
+typedef int flag_t;
+
 struct nncards {
-	enum run { RUN, NORUN } run;
+	flag_t run;
 	char* cardfile;
-	enum opt_first_side { TERM, DEFINITION } opt_first_side;
-	int opt_random;
-	int opt_initcard;
+	enum first_side { TERM, DEFINITION } first_side;
+	flag_t random;
+	int initcard;
+	flag_t die_on_error;
 };
 
 struct nncards nnc_init(int argc, char** argv);

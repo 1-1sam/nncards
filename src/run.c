@@ -11,19 +11,22 @@
 #define NNC_FRST 4
 #define NNC_QUIT 5
 
+typedef int flag_t;
+
 struct nncards {
-	enum run { RUN, NORUN } run;
+	flag_t run;
 	char* cardfile;
-	enum opt_first_side { TERM, DEFINITION } opt_first_side;
-	int opt_random;
-	int opt_initcard;
+	enum first_side { TERM, DEFINITION } first_side;
+	flag_t random;
+	int initcard;
+	flag_t die_on_error; /* TODO: Implement -d option */
 };
 
 static void
 _print_help(void) {
 
 	printf("nncards - 1.0\n");
-	printf("Usage: nncards [-trhv] [-c n] file\n");
+	printf("Usage: nncards [-drthv] [-c n] file\n");
 	printf("\n");
 	printf("Options:\n");
 	printf("	-r    Randomize the order that the cards are shown in.\n");
@@ -88,43 +91,47 @@ struct nncards
 nnc_init(int argc, char** argv) {
 
 	struct nncards nnc_return = {
-		.run = RUN,
+		.run = 1,
 		.cardfile = NULL,
-		.opt_first_side = DEFINITION,
-		.opt_random = 0,
-		.opt_initcard = 0
+		.first_side = DEFINITION,
+		.random = 0,
+		.initcard = 0,
+		.die_on_error = 0
 	};
 
 	int c;
 
-	while ((c = getopt(argc, argv, "rtc:hv")) != -1) {
+	while ((c = getopt(argc, argv, "drtc:hv")) != -1) {
 		switch (c) {
+			case 'd':
+				nnc_return.die_on_error = 1;
+				break;
 			case 'r':
-				nnc_return.opt_random = 1;
+				nnc_return.random = 1;
 				break;
 			case 't':
-				nnc_return.opt_first_side = TERM;
+				nnc_return.first_side = TERM;
 				break;
 			case 'c':
-				nnc_return.opt_initcard = atoi(optarg);
+				nnc_return.initcard = atoi(optarg);
 				break;
 			case 'h':
-				nnc_return.run = NORUN;
+				nnc_return.run = 0;
 				_print_help();
 				return nnc_return;
 			case 'v':
-				nnc_return.run = NORUN;
+				nnc_return.run = 0;
 				_print_version();
 				return nnc_return;
 			case '?':
-				nnc_return.run = NORUN;
+				nnc_return.run = 0;
 				return nnc_return;
 		}
 	}
 
 	if ((nnc_return.cardfile = argv[optind]) == NULL) {
 		fprintf(stderr, "No argument was passed\n");
-		nnc_return.run = NORUN;
+		nnc_return.run = 0;
 	}
 
 	return nnc_return;
@@ -138,25 +145,27 @@ nnc_main_loop(struct nncards nncards) {
 		return -1;
 	}
 
-	int cardnum = cp_get_cardnum(nncards.cardfile);
+	int cardnum;
 	struct card* deck;
 	struct tb_event ev;
-	int currcard = (nncards.opt_initcard > 0 && nncards.opt_initcard <= cardnum)
-		? nncards.opt_initcard - 1 : 0;
+	int currcard;
 	char* currstr;
 	char* filename;
 
-	if (!cardnum) {
+	if (!(cardnum = cp_get_cardnum(nncards.cardfile))) {
 		fprintf(stderr, "%s: Not a valid card file\n", nncards.cardfile);
 		return -1;
 	}
 
+	currcard = (nncards.initcard > 0 && nncards.initcard <= cardnum)
+		? nncards.initcard -1 : 0;
+
 	deck = cp_get_cards(nncards.cardfile, cardnum);
 
-	if (nncards.opt_first_side == TERM)
+	if (nncards.first_side == TERM)
 		cp_side_swap(deck, cardnum);
 
-	if (nncards.opt_random)
+	if (nncards.random)
 		cp_card_shuffle(deck, cardnum);
 
 
@@ -204,4 +213,5 @@ nnc_main_loop(struct nncards nncards) {
 		}
 	}
 }
+
 
