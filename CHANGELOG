@@ -1,7 +1,5 @@
 1.0 -> ?.?
 Changes:
-  - Lines that do not contain valid terms or definitions no longer cause
-    nncards to throw an error and exit, they are now just ignored.
   - More key controls:
       Right Arrow, l: Next card
       Left Arrow, j: Previous card
@@ -16,3 +14,4 @@ Changes:
   - Replace any tabs in the term/definition with spaces. Tabs cause Termbox's
     TUI rendering to freak out.
   - The info bar now only shows the card file name, rather than its full path.
+  - nncards will specify which line it cannot parse, if it ever encounters one.
