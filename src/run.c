@@ -162,7 +162,10 @@ nnc_main_loop(struct nncards nncards) {
 	if (nncards.random)
 		cp_card_shuffle(deck, cardnum);
 
-
+	/*
+	 * Get a pointer to the character after the last slash, which should point
+	 * to file name.
+	 */
 	if ((filename = strrchr(nncards.cardfile, '/')) != NULL)
 		filename++;
 	else
