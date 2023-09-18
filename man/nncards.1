@@ -1,4 +1,4 @@
-.Dd $Mdocdate: September 16 2023 $
+.Dd $Mdocdate: September 17 2023 $
 .Dt NNCARDS 1
 .Os
 .Sh NAME
@@ -33,7 +33,9 @@ Lines starting with a hash (#) are interpreted as comments and ignored.
 .It
 Blank lines are ignored.
 .It
-Lines that do not contain valid terms/definitions are ignored.
+Lines that do not contain valid terms/definitions cause
+.Nm
+to throw an error specifying which line it cannot parse.
 .El
 .Pp
 .Em example.cards
