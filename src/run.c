@@ -19,14 +19,13 @@ struct nncards {
 	enum first_side { TERM, DEFINITION } first_side;
 	flag_t random;
 	int initcard;
-	flag_t die_on_error; /* TODO: Implement -d option */
 };
 
 static void
 _print_help(void) {
 
 	printf("nncards - 1.0\n");
-	printf("Usage: nncards [-drthv] [-c n] file\n");
+	printf("Usage: nncards [-rthv] [-c n] file\n");
 	printf("\n");
 	printf("Options:\n");
 	printf("	-r    Randomize the order that the cards are shown in.\n");
@@ -96,16 +95,12 @@ nnc_init(int argc, char** argv) {
 		.first_side = DEFINITION,
 		.random = 0,
 		.initcard = 0,
-		.die_on_error = 0
 	};
 
 	int c;
 
-	while ((c = getopt(argc, argv, "drtc:hv")) != -1) {
+	while ((c = getopt(argc, argv, "rtc:hv")) != -1) {
 		switch (c) {
-			case 'd':
-				nnc_return.die_on_error = 1;
-				break;
 			case 'r':
 				nnc_return.random = 1;
 				break;
@@ -152,10 +147,9 @@ nnc_main_loop(struct nncards nncards) {
 	char* currstr;
 	char* filename;
 
-	if (!(cardnum = cp_get_cardnum(nncards.cardfile))) {
-		fprintf(stderr, "%s: Not a valid card file\n", nncards.cardfile);
+	/* cp_get_cardnum prints the error message itself */
+	if ((cardnum = cp_get_cardnum(nncards.cardfile)) == -1)
 		return -1;
-	}
 
 	currcard = (nncards.initcard > 0 && nncards.initcard <= cardnum)
 		? nncards.initcard -1 : 0;

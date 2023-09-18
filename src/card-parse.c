@@ -23,8 +23,14 @@ cp_get_cardnum(char* filename) {
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
 
-		if (strchr(line, ':'))
+		if (strchr(line, ':')) {
 			cardnum++;
+		} else {
+			fprintf(stderr,
+				"%s: Invalid line (line %d)\n", filename, cardnum + 1);
+			cardnum = -1;
+			break;
+		}
 	}
 
 	fclose(cardfile);
