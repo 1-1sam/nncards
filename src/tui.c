@@ -4,6 +4,7 @@
 #define TB_IMPL
 #include "termbox.h"
 
+/* TODO: If line would go out of card border, cut line short */
 static void
 _text_print(char* str) {
 
