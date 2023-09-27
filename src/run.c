@@ -124,7 +124,7 @@ nnc_init(int argc, char** argv) {
 		}
 	}
 
-	if ((nnc_return.cardfile = argv[optind]) == NULL) {
+	if (!(nnc_return.cardfile = argv[optind])) {
 		fprintf(stderr, "No argument was passed\n");
 		nnc_return.run = 0;
 	}
@@ -166,7 +166,7 @@ nnc_main_loop(struct nncards nncards) {
 	 * Get a pointer to the character after the last slash, which should point
 	 * to file name.
 	 */
-	if ((filename = strrchr(nncards.cardfile, '/')) != NULL)
+	if ((filename = strrchr(nncards.cardfile, '/')))
 		filename++;
 	else
 		filename = nncards.cardfile;

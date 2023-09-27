@@ -18,7 +18,7 @@ cp_get_cardnum(char* filename) {
 	int cardnum = 0;
 	char line[MY_BUFSIZE];
 
-	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
+	while (fgets(line, MY_BUFSIZE, cardfile)) {
 
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
@@ -50,7 +50,7 @@ cp_get_cards(char* filename, int cardnum) {
 
 	cards = malloc(sizeof(struct card) * cardnum);
 
-	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
+	while (fgets(line, MY_BUFSIZE, cardfile)) {
 
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
@@ -63,7 +63,7 @@ cp_get_cards(char* filename, int cardnum) {
 			if (line[i] == '\t') line[i] = ' ';
 
 		/* Getting side1 (the definition) */
-		if ((s1 = strchr(line, ':')) == NULL)
+		if (!(s1 = strchr(line, ':')))
 			continue;
 
 		while (isblank(*(++s1)))
