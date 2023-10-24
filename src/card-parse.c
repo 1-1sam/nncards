@@ -11,8 +11,6 @@ struct card {
 	char* side2;
 };
 
-/* TODO: Check for failed mallocs */
-
 int
 cp_get_cardnum(char* filename) {
 
