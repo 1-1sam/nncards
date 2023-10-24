@@ -50,7 +50,10 @@ cp_get_cards(char* filename, int cardnum) {
 	char* s1;
 	char* s2;
 
-	cards = malloc(sizeof(struct card) * cardnum);
+	if (!(cards = malloc(sizeof(struct card) * cardnum))) {
+		fprintf(stderr, "Failed to allocate memory\n");
+		return NULL;
+	}
 
 	while (fgets(line, MY_BUFSIZE, cardfile)) {
 
@@ -87,7 +90,7 @@ cp_get_cards(char* filename, int cardnum) {
 
 }
 
-void
+int
 cp_card_shuffle(struct card* cards, int cardnum) {
 
 	struct card* tmpcards;
@@ -95,7 +98,11 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 
 	srand(time(NULL));
 
-	tmpcards = malloc(sizeof(struct card) * cardnum);
+	if (!(tmpcards = malloc(sizeof(struct card) * cardnum))) {
+		fprintf(stderr, "Failed to allocate memory\n");
+		return -1;
+	}
+
 	memcpy(tmpcards, cards, sizeof(struct card) * cardnum);
 
 	for (int i = 0, cardsleft = cardnum; cardsleft > 0; i++, cardsleft--) {
@@ -107,6 +114,8 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 	}
 
 	free(tmpcards);
+
+	return 0;
 }
 
 void

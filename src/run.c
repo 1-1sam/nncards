@@ -156,11 +156,16 @@ nnc_main_loop(struct nncards nncards) {
 
 	deck = cp_get_cards(nncards.cardfile, cardnum);
 
+	if (!deck)
+		return -1;
+
 	if (nncards.first_side == TERM)
 		cp_side_swap(deck, cardnum);
 
-	if (nncards.random)
-		cp_card_shuffle(deck, cardnum);
+	if (nncards.random) {
+		if (cp_card_shuffle(deck, cardnum) == -1)
+			return -1;
+	}
 
 	/*
 	 * Get a pointer to the character after the last slash, which should point
