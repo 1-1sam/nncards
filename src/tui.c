@@ -4,7 +4,6 @@
 #define TB_IMPL
 #include "termbox.h"
 
-/* TODO: If line would go out of card border, cut line short */
 static void
 _text_print(char* str) {
 
@@ -12,9 +11,12 @@ _text_print(char* str) {
 	int h = tb_height();
 	int linelen = w - 6;
 	int yoffset = -(strlen(str) / linelen) / 2;
+	int yoffset_limit = (h - 3) - (h / 2);
 	char* p = str;
-
 	char line[linelen + 1];
+
+	if (yoffset < 3 - (h / 2))
+		yoffset = 3 - (h / 2);
 
 	do {
 		strncpy(line, p, linelen);
@@ -25,7 +27,7 @@ _text_print(char* str) {
 
 		p += linelen;
 
-	} while (line[linelen - 1]);
+	} while (line[linelen - 1] && yoffset != yoffset_limit);
 
 }
 
