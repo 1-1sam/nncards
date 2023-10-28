@@ -17,3 +17,4 @@ Changes:
   - nncards will specify which line it cannot parse, if it ever encounters one.
   - Text is cut short if some of its lines would be printed outside the card's
     border.
+  - If no argument is passed, nncards prints help message.

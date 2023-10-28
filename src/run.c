@@ -125,7 +125,7 @@ nnc_init(int argc, char** argv) {
 	}
 
 	if (!(nnc_return.cardfile = argv[optind])) {
-		fprintf(stderr, "No argument was passed\n");
+		_print_help();
 		nnc_return.run = 0;
 	}
 
