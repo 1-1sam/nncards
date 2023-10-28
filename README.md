@@ -36,7 +36,11 @@ make
 make install DESTDIR=/where/ever
 make clean
 ```
+Documentation is installed seperately.
 
+```bash
+make install-doc DESTDIR=/where/ever
+```
 ## Credit
 [termbox2](https://github.com/termbox/termbox2) - TUI rendering
 
