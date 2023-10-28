@@ -1,4 +1,4 @@
-1.0 -> ?.?
+1.0 -> 2.0
 Changes:
   - More key controls:
       Right Arrow, l: Next card
@@ -15,3 +15,5 @@ Changes:
     TUI rendering to freak out.
   - The info bar now only shows the card file name, rather than its full path.
   - nncards will specify which line it cannot parse, if it ever encounters one.
+  - Text is cut short if some of its lines would be printed outside the card's
+    border.

@@ -24,7 +24,7 @@ struct nncards {
 static void
 _print_help(void) {
 
-	printf("nncards - 1.0\n");
+	printf("nncards - 2.0\n");
 	printf("Usage: nncards [-rthv] [-c n] file\n");
 	printf("\n");
 	printf("Options:\n");
@@ -39,7 +39,7 @@ _print_help(void) {
 static void
 _print_version(void) {
 
-	printf("nncards - 1.0\n");
+	printf("nncards - 2.0\n");
 
 }
 
