@@ -1,3 +1,6 @@
+2.0 -> ???
+- Removed install-doc, manual is included in make install.
+
 1.0 -> 2.0
 Changes:
   - More key controls:
