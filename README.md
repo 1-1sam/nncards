@@ -33,7 +33,7 @@ The only thing you need to build **nncards** is a C compiler and make.
 
 ```bash
 make
-make install DESTDIR=/where/ever
+make install # run as root if you are installing directly into system
 make clean
 ```
 ## Credit
