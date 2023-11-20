@@ -4,11 +4,11 @@
 #define TB_IMPL
 #include "termbox.h"
 
+int h, w;
+
 static void
 _text_print(char* str) {
 
-	int w = tb_width();
-	int h = tb_height();
 	int linelen = w - 6;
 	int yoffset = -(strlen(str) / linelen) / 2;
 	int yoffset_limit = (h - 3) - (h / 2);
@@ -32,10 +32,15 @@ _text_print(char* str) {
 }
 
 void
-tui_draw_card(char* str) {
+tui_update_size(void) {
 
-	int w = tb_width();
-	int h = tb_height();
+	h = tb_height();
+	w = tb_width();
+
+}
+
+void
+tui_draw_card(char* str) {
 
 	/* Drawing corners. */
 	tb_set_cell(1, 2, 0x250C, 0, 0);
@@ -67,8 +72,6 @@ tui_draw_card(char* str) {
 
 void
 tui_draw_info(char* filename, int currcard, int cardnum) {
-
-	int h = tb_height();
 
 	tb_printf(0, h - 1, 0, 0, "[%d/%d] %s", currcard, cardnum, filename);
 

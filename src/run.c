@@ -183,6 +183,8 @@ nnc_main_loop(struct nncards nncards) {
 	for (;;) {
 
 		tb_clear();
+
+		tui_update_size();
 		tui_draw_card(currstr);
 		tui_draw_info(filename, currcard + 1, cardnum);
 
