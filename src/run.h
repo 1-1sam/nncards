@@ -9,7 +9,7 @@ typedef int flag_t;
 struct nncards {
 	flag_t run;
 	char* cardfile;
-	enum first_side { TERM, DEFINITION } first_side;
+	enum { TERM, DEFINITION } first_side;
 	flag_t random;
 	int initcard;
 	flag_t die_on_error;
