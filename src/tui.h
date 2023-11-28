@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "termbox.h"
+#include "termbox2.h"
 
 void tui_update_size(void);
 void tui_draw_card(char* str);

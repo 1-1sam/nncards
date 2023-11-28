@@ -5,7 +5,7 @@ nncards_ldlibs := -lm
 
 all: nncards
 
-nncards: $(nncards_objects) termbox.h
+nncards: $(nncards_objects) termbox2.h
 	$(CC) $(nncards_cflags) $(nncards_objects) $(LDFLAGS) $(nncards_ldlibs) -o nncards
 
 $(nncards_objects): %.o: %.c

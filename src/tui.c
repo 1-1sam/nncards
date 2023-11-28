@@ -2,7 +2,7 @@
 #include <string.h>
 
 #define TB_IMPL
-#include "termbox.h"
+#include "termbox2.h"
 
 int h, w;
 
