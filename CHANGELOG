@@ -1,0 +1,2 @@
+2.0 -> ???
+* Logical evaluations on non-booleans no longer use 'if (foo)' or 'if (!foo)'.
