@@ -1,2 +1,7 @@
 2.0 -> ???
+[11/28/23] 
 * Logical evaluations on non-booleans no longer use 'if (foo)' or 'if (!foo)'.
+
+1.0 -> 2.0
+Many changes were not documented. The ones that were are present in
+CHANGELOG.old
