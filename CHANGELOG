@@ -1,6 +1,9 @@
 2.0 -> ???
-[11/28/23] 
+
+[11/28/23]
+ 
 * Logical evaluations on non-booleans no longer use 'if (foo)' or 'if (!foo)'.
+
 * src/Makefile is now based on ebread's Makefile (another project I'm working
   on). ebread's Makefile was heavily based on mle's Makefile. Changes to the
   Makefile include using patsubst to get object file names, cleaner cflags,
@@ -8,6 +11,11 @@
   the root Makefile. make install no longer installs the manual, that now must
   be manually installed :-).
 
+* termbox.h was updated to termbox2.h
+
+---
+
 1.0 -> 2.0
+
 Many changes were not documented. The ones that were are present in
-CHANGELOG.old
+CHANGELOG.old.
