@@ -124,7 +124,7 @@ nnc_init(int argc, char** argv) {
 		}
 	}
 
-	if (!(nnc_return.cardfile = argv[optind])) {
+	if ((nnc_return.cardfile = argv[optind]) == NULL) {
 		_print_help();
 		nnc_return.run = 0;
 	}
@@ -135,7 +135,7 @@ nnc_init(int argc, char** argv) {
 int
 nnc_main_loop(struct nncards nncards) {
 
-	if (access(nncards.cardfile, R_OK)) {
+	if (access(nncards.cardfile, R_OK) != 0) {
 		fprintf(stderr, "%s: Cannot be opened\n", nncards.cardfile);
 		return -1;
 	}
@@ -156,7 +156,7 @@ nnc_main_loop(struct nncards nncards) {
 
 	deck = cp_get_cards(nncards.cardfile, cardnum);
 
-	if (!deck)
+	if (deck == NULL)
 		return -1;
 
 	if (nncards.first_side == TERM)
@@ -171,7 +171,7 @@ nnc_main_loop(struct nncards nncards) {
 	 * Get a pointer to the character after the last slash, which should point
 	 * to file name.
 	 */
-	if ((filename = strrchr(nncards.cardfile, '/')))
+	if ((filename = strrchr(nncards.cardfile, '/')) != NULL)
 		filename++;
 	else
 		filename = nncards.cardfile;

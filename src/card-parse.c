@@ -23,7 +23,7 @@ cp_get_cardnum(char* filename) {
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
 
-		if (strchr(line, ':')) {
+		if (strchr(line, ':') != NULL) {
 			cardnum++;
 		} else {
 			fprintf(stderr,
@@ -48,12 +48,12 @@ cp_get_cards(char* filename, int cardnum) {
 	char* s1;
 	char* s2;
 
-	if (!(cards = malloc(sizeof(struct card) * cardnum))) {
+	if ((cards = malloc(sizeof(struct card) * cardnum)) == NULL) {
 		fprintf(stderr, "Failed to allocate memory\n");
 		return NULL;
 	}
 
-	while (fgets(line, MY_BUFSIZE, cardfile)) {
+	while (fgets(line, MY_BUFSIZE, cardfile) != 0) {
 
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
@@ -62,11 +62,11 @@ cp_get_cards(char* filename, int cardnum) {
 		*(strchr(line, '\n')) = '\0';
 
 		/* Tabs mess up the TUI rendering, replace them with spaces */
-		for (int i = 0; line[i]; i++)
+		for (int i = 0; line[i] != '\0'; i++)
 			if (line[i] == '\t') line[i] = ' ';
 
 		/* Getting side1 (the definition) */
-		if (!(s1 = strchr(line, ':')))
+		if ((s1 = strchr(line, ':')) == NULL)
 			continue;
 
 		while (isblank(*(++s1)))
@@ -96,7 +96,7 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 
 	srand(time(NULL));
 
-	if (!(tmpcards = malloc(sizeof(struct card) * cardnum))) {
+	if ((tmpcards = malloc(sizeof(struct card) * cardnum)) == NULL) {
 		fprintf(stderr, "Failed to allocate memory\n");
 		return -1;
 	}
