@@ -1,5 +1,9 @@
 2.0 -> ???
 
+[11/29/23]
+
+* Removed unnecessary rm options in make clean.
+
 [11/28/23]
  
 * Logical evaluations on non-booleans no longer use 'if (foo)' or 'if (!foo)'.
