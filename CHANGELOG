@@ -16,16 +16,16 @@ Added:
       Escape: Quit nncards
   - -c option: Start at nth card (n being the given integer)
 
-Changes:
+Changes: 
   - Cards are now stored on heap rather than stack.
   - There is no longer a 254 character limit on terms/definitions.
-  - Default make install PREFIX is now /usr/local rather than /usr.
-  - The info bar now only shows the card file name, rather than its full path.
-  - nncards will specify which line it cannot parse, if it ever encounters one.
+  - Default make install PREFIX is now /usr/local instead of /usr.
+  - The info bar now only shows the card file name, rather than its given path.
+  - nncards will specify which line it cannot parse, if it encounters one.
   - If no argument is passed, nncards prints help message.
 
 Fixes:
-  - Replace any tabs in the term/definition with spaces. Tabs cause Termbox's
-    TUI rendering to freak out.
+  - Replace any tabs in the term/definition with spaces, as tabs cause the TUI
+    rendering to mess up.
   - Text is cut short if some of its lines would be printed outside the card's
     border.

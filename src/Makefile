@@ -12,4 +12,4 @@ $(nncards_objects): %.o: %.c
 	$(CC) -c $(nncards_cflags) $< -o $@
 
 clean:
-	rm -fr nncards $(nncards_objects)
+	rm nncards $(nncards_objects)
