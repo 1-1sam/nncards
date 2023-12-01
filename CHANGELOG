@@ -1,6 +1,6 @@
 2.0 -> 11/30/2023
 Changes:
-  - Removed install-doc, manual is included in make install.
+  - Removed install-doc.
   - Redid Makefile, based off of the text editor mle's Makefile. Now supports
     custom LDFLAGS.
   - Updated termbox.h to termbox2.h.
