@@ -1,21 +1,31 @@
-2.0 -> ???
+2.0 -> 11/30/2023
+Changes:
+  - Removed install-doc, manual is included in make install.
+  - Redid Makefile, based off of the text editor mle's Makefile. Now supports
+    custom LDFLAGS.
+  - Updated termbox.h to termbox2.h.
 
-[11/28/23]
- 
-* Logical evaluations on non-booleans no longer use 'if (foo)' or 'if (!foo)'.
+1.0 -> 2.0 (10/28/2023)
+Added:
+  - More key controls:
+      Right Arrow, l: Next card
+      Left Arrow, j: Previous card
+      Space, Up/Down Arrow: Flip card
+      Page Up: First card
+      Page Down: Last card
+      Escape: Quit nncards
+  - -c option: Start at nth card (n being the given integer)
 
-* src/Makefile is now based on ebread's Makefile (another project I'm working
-  on). ebread's Makefile was heavily based on mle's Makefile. Changes to the
-  Makefile include using patsubst to get object file names, cleaner cflags,
-  supporting ldflags, and make clean being handled by src/Makefile rather than
-  the root Makefile. make install no longer installs the manual, that now must
-  be manually installed :-).
+Changes:
+  - Cards are now stored on heap rather than stack.
+  - There is no longer a 254 character limit on terms/definitions.
+  - Default make install PREFIX is now /usr/local rather than /usr.
+  - The info bar now only shows the card file name, rather than its full path.
+  - nncards will specify which line it cannot parse, if it ever encounters one.
+  - If no argument is passed, nncards prints help message.
 
-* termbox.h was updated to termbox2.h
-
----
-
-1.0 -> 2.0
-
-Many changes were not documented. The ones that were are present in
-CHANGELOG.old.
+Fixes:
+  - Replace any tabs in the term/definition with spaces. Tabs cause Termbox's
+    TUI rendering to freak out.
+  - Text is cut short if some of its lines would be printed outside the card's
+    border.
