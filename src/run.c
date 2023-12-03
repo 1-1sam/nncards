@@ -135,17 +135,17 @@ nnc_init(int argc, char** argv) {
 int
 nnc_main_loop(struct nncards nncards) {
 
-	if (access(nncards.cardfile, R_OK) != 0) {
-		fprintf(stderr, "%s: Cannot be opened\n", nncards.cardfile);
-		return -1;
-	}
-
 	int cardnum;
 	struct card* deck;
 	struct tb_event ev;
 	int currcard;
 	char* currstr;
 	char* filename;
+
+	if (access(nncards.cardfile, R_OK) != 0) {
+		fprintf(stderr, "%s: Cannot be opened\n", nncards.cardfile);
+		return -1;
+	}
 
 	/* cp_get_cardnum prints the error message itself */
 	if ((cardnum = cp_get_cardnum(nncards.cardfile)) == -1)
