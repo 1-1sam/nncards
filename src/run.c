@@ -89,6 +89,7 @@ _burn_deck(struct card* deck, int cardnum) {
 struct nncards
 nnc_init(int argc, char** argv) {
 
+	int c;
 	struct nncards nnc_return = {
 		.run = 1,
 		.cardfile = NULL,
@@ -96,8 +97,6 @@ nnc_init(int argc, char** argv) {
 		.random = 0,
 		.initcard = 0,
 	};
-
-	int c;
 
 	while ((c = getopt(argc, argv, "rtc:hv")) != -1) {
 		switch (c) {
@@ -108,7 +107,7 @@ nnc_init(int argc, char** argv) {
 				nnc_return.first_side = TERM;
 				break;
 			case 'c':
-				nnc_return.initcard = atoi(optarg);
+				nnc_return.initcard = strtol(optarg, NULL, 10);
 				break;
 			case 'h':
 				nnc_return.run = 0;
