@@ -11,6 +11,10 @@
 #define NNC_FRST 4
 #define NNC_QUIT 5
 
+#ifndef NNC_VERSION
+#define NNC_VERSION "2.0"
+#endif
+
 typedef int flag_t;
 
 struct nncards {
@@ -24,7 +28,7 @@ struct nncards {
 static void
 _print_help(void) {
 
-	printf("nncards - 2.0\n");
+	printf("nncards - %s\n", NNC_VERSION);
 	printf("Usage: nncards [-rthv] [-c n] file\n");
 	printf("\n");
 	printf("Options:\n");
@@ -39,7 +43,7 @@ _print_help(void) {
 static void
 _print_version(void) {
 
-	printf("nncards - 2.0\n");
+	printf("nncards - %s\n", NNC_VERSION);
 
 }
 

@@ -3,6 +3,10 @@ nncards_objects := $(patsubst %.c,%.o,$(wildcard *.c))
 nncards_ldflags := $(LDFLAGS)
 nncards_ldlibs := -lm
 
+ifdef nncards_version
+  nncards_cflags := $(nncards_cflags) -DNNC_VERSION="\"$(nncards_version)\""
+endif
+
 all: nncards
 
 nncards: $(nncards_objects) termbox2.h
