@@ -36,6 +36,13 @@ make
 make install # run as root if you are installing directly into system
 make clean
 ```
+The nncards_version can be set if you wish to compile nncards with a special
+version number.
+
+```bash
+make nncards_version=2.0-r2
+```
+
 ## Credit
 [termbox2](https://github.com/termbox/termbox2) - TUI rendering
 
