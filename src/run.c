@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <getopt.h>
 
 #include "tui.h"
 #include "card-parse.h"
@@ -29,14 +30,13 @@ static void
 _print_help(void) {
 
 	printf("nncards - %s\n", NNC_VERSION);
-	printf("Usage: nncards [-rthv] [-c n] file\n");
-	printf("\n");
+	printf("Usage: nncards [options] file\n\n");
 	printf("Options:\n");
-	printf("	-r    Randomize the order that the cards are shown in.\n");
-	printf("	-t    Show terms first rather than definitions.\n");
-	printf("	-c n  Start at the nth card.\n");
-	printf("	-h    Print this help message.\n");
-	printf("	-v    Print program version.\n");
+	printf("	-r             --random        Randomize the order that the cards are shown in.\n");
+	printf("	-t             --terms-first   Show terms first rather than definitions.\n");
+	printf("	-c <number>    --at=<number>   Start at the nth card.\n");
+	printf("	-h             --help          Print this help message.\n");
+	printf("	-v             --version       Print program version.\n");
 
 }
 
@@ -64,13 +64,13 @@ _event_parse(struct tb_event ev) {
 	}
 
 	switch (ev.key) {
-		case TB_KEY_ARROW_RIGHT: return NNC_NEXT;
-		case TB_KEY_ARROW_LEFT: return NNC_PREV;
-		case TB_KEY_ARROW_UP: return NNC_FLIP;
-		case TB_KEY_ARROW_DOWN: return NNC_FLIP;
-		case TB_KEY_PGDN: return NNC_LAST;
-		case TB_KEY_PGUP: return NNC_FRST;
-		case TB_KEY_ESC: return NNC_QUIT;
+		case TB_KEY_ARROW_RIGHT:  return NNC_NEXT;
+		case TB_KEY_ARROW_LEFT:   return NNC_PREV;
+		case TB_KEY_ARROW_UP:     return NNC_FLIP;
+		case TB_KEY_ARROW_DOWN:   return NNC_FLIP;
+		case TB_KEY_PGDN:         return NNC_LAST;
+		case TB_KEY_PGUP:         return NNC_FRST;
+		case TB_KEY_ESC:          return NNC_QUIT;
 		default: break;
 	}
 
@@ -101,17 +101,26 @@ nnc_init(int argc, char** argv) {
 		.random = 0,
 		.initcard = 0,
 	};
+	struct option long_options[] = {
+		{ "at", required_argument, 0, 'c' },
+		{ "random", no_argument, 0, 'r' },
+		{ "terms-first", no_argument, 0, 't' },
+		{ "help", no_argument, 0, 'h' },
+		{ "version", no_argument, 0, 'v' },
+		{ 0, 0, 0, 0 }
+	};
 
-	while ((c = getopt(argc, argv, "rtc:hv")) != -1) {
+	while ((c = getopt_long(argc, argv, "c:rthv", long_options, NULL)) != -1 ) {
+
 		switch (c) {
+			case 'c':
+				nnc_return.initcard = strtol(optarg, NULL, 10);
+				break;
 			case 'r':
 				nnc_return.random = 1;
 				break;
 			case 't':
 				nnc_return.first_side = TERM;
-				break;
-			case 'c':
-				nnc_return.initcard = strtol(optarg, NULL, 10);
 				break;
 			case 'h':
 				nnc_return.run = 0;
@@ -124,10 +133,16 @@ nnc_init(int argc, char** argv) {
 			case '?':
 				nnc_return.run = 0;
 				return nnc_return;
+			default:
+				fprintf(stderr, "Error parsing options\n");
+				nnc_return.run = 0;
+				return nnc_return;
 		}
 	}
 
-	if ((nnc_return.cardfile = argv[optind]) == NULL) {
+	if (optind < argc) {
+		nnc_return.cardfile = argv[optind];
+	} else {
 		_print_help();
 		nnc_return.run = 0;
 	}
