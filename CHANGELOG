@@ -3,6 +3,12 @@ Added:
   - nncards can now be compiled with a desired version through the
     nncards_version variable. For example:
       make nncards_version=2.0-1+deb12u1
+  - Added long options alongside the short options:
+    -c has --at
+    -r has --random
+    -t has --terms-first
+    -h has --help
+    -v has --version
 
 Changes:
   - Removed install-doc.
