@@ -1,4 +1,4 @@
-.Dd $Mdocdate: September 17 2023 $
+.Dd $Mdocdate: December 15 2023 $
 .Dt NNCARDS 1
 .Os
 .Sh NAME
@@ -7,7 +7,7 @@
 .Sh SYNOPSIS
 .Nm nncards
 .Op Fl trhv
-.Op Fl c Ar n
+.Op Fl c Ar number
 .Ar file
 .Sh DESCRIPTION
 .Nm
@@ -56,20 +56,20 @@ is controlled through various keys:
 .Nm
 has the following options:
 .Bl -tag -width Ds
-.It Fl c Ar n
+.It Fl c Ar <number>, Fl \-at Ns = Ns  Ar <number>
 Start at the
 .Ar nth
 card. If
-.Ar n
+.Ar number
 is greater than the total number of cards, start at
 the first card.
-.It Fl r
+.It Fl r, Fl \-random
 Randomize the order the cards appear in.
-.It Fl t
+.It Fl t, Fl \-terms-first
 Show terms first rather than definitions.
-.It Fl h
+.It Fl h, Fl \-help
 Print help message.
-.It Fl v
+.It Fl v, Fl \-version
 Print
 .Nm
 version.
