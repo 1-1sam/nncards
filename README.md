@@ -3,8 +3,8 @@
 flashcards from a given card file.
 
 ## Usage
-**nncards** must be invoked with a card file provided as an argument. Here is how
-**nncards** interprets given files:
+**nncards** must be invoked with a card file provided as an argument. Here is
+how **nncards** interprets given files:
 
 * Terms and definitions are seperated by a colon (:). Terms precede the colon,
 definitions follow the colon. Any whitespace between the colon and definition
