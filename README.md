@@ -36,8 +36,8 @@ make
 make install # run as root if you are installing directly into system
 make clean
 ```
-The nncards_version can be set if you wish to compile nncards with a special
-version number.
+The nncards_version variable can be set if you wish to compile nncards with a
+special version number.
 
 ```bash
 make nncards_version=2.0-r2
