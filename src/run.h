@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-
-#include "tui.h"
-#include "card-parse.h"
-
 typedef int flag_t;
 
 struct nncards {
@@ -12,7 +6,6 @@ struct nncards {
 	enum { TERM, DEFINITION } first_side;
 	flag_t random;
 	int initcard;
-	flag_t die_on_error;
 };
 
 struct nncards nnc_init(int argc, char** argv);

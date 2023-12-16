@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-
 #include "termbox2.h"
 
 void tui_update_size(void);
