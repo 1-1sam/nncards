@@ -9,6 +9,7 @@ Added:
     -t has --terms-first
     -h has --help
     -v has --version
+  - Manual includes a sample card file.
 
 Changes:
   - Removed install-doc.
