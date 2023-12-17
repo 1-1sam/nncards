@@ -1,4 +1,4 @@
-2.0 -> 12/15/2023
+2.0 -> 12/17/2023
 Added:
   - nncards can now be compiled with a desired version through the
     nncards_version variable. For example:
