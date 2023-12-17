@@ -101,6 +101,7 @@ nnc_init(int argc, char** argv) {
 		.random = 0,
 		.initcard = 0,
 	};
+
 	struct option long_options[] = {
 		{ "at", required_argument, 0, 'c' },
 		{ "random", no_argument, 0, 'r' },
@@ -170,7 +171,7 @@ nnc_main_loop(struct nncards nncards) {
 		return -1;
 
 	currcard = (nncards.initcard > 0 && nncards.initcard <= cardnum)
-		? nncards.initcard -1 : 0;
+		? nncards.initcard - 1 : 0;
 
 	deck = cp_get_cards(nncards.cardfile, cardnum);
 

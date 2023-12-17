@@ -18,7 +18,7 @@ cp_get_cardnum(char* filename) {
 	int cardnum = 0;
 	char line[MY_BUFSIZE];
 
-	while (fgets(line, MY_BUFSIZE, cardfile)) {
+	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
 
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
@@ -26,8 +26,8 @@ cp_get_cardnum(char* filename) {
 		if (strchr(line, ':') != NULL) {
 			cardnum++;
 		} else {
-			fprintf(stderr,
-				"%s: Invalid line (line %d)\n", filename, cardnum + 1);
+			fprintf(stderr, "%s: Invalid line (line %d)\n",
+				filename, cardnum + 1);
 			cardnum = -1;
 			break;
 		}
@@ -45,15 +45,16 @@ cp_get_cards(char* filename, int cardnum) {
 	FILE* cardfile = fopen(filename, "r");
 	int cc = 0;
 	char line[MY_BUFSIZE];
-	char* s1;
-	char* s2;
+	char *s1, *s2;
 
-	if ((cards = malloc(sizeof(struct card) * cardnum)) == NULL) {
+	cards = malloc(sizeof(struct card) * cardnum);
+
+	if (cards == NULL) {
 		fprintf(stderr, "Failed to allocate memory\n");
 		return NULL;
 	}
 
-	while (fgets(line, MY_BUFSIZE, cardfile) != 0) {
+	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
 
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
@@ -62,8 +63,10 @@ cp_get_cards(char* filename, int cardnum) {
 		*(strchr(line, '\n')) = '\0';
 
 		/* Tabs mess up the TUI rendering, replace them with spaces */
-		for (int i = 0; line[i] != '\0'; i++)
-			if (line[i] == '\t') line[i] = ' ';
+		for (int i = 0; line[i] != '\0'; i++) {
+			if (line[i] == '\t')
+				line[i] = ' ';
+		}
 
 		/* Getting side1 (the definition) */
 		if ((s1 = strchr(line, ':')) == NULL)
@@ -96,7 +99,9 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 
 	srand(time(NULL));
 
-	if ((tmpcards = malloc(sizeof(struct card) * cardnum)) == NULL) {
+	tmpcards = malloc(sizeof(struct card) * cardnum);
+
+	if (tmpcards == NULL) {
 		fprintf(stderr, "Failed to allocate memory\n");
 		return -1;
 	}
