@@ -1,4 +1,4 @@
-2.0 -> 12/17/2023
+2.0 -> 1/10/2024
 Added:
   - nncards can now be compiled with a desired version through the
     nncards_version variable. For example:
@@ -16,6 +16,7 @@ Changes:
   - Redid Makefile, based off of the text editor mle's Makefile. Now supports
     custom LDFLAGS.
   - Updated termbox.h to termbox2.h.
+  - Clearer error messages.
 
 1.0 -> 2.0 (10/28/2023)
 Added:

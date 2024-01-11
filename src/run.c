@@ -166,17 +166,20 @@ nnc_main_loop(struct nncards nncards) {
 		return -1;
 	}
 
-	/* cp_get_cardnum prints the error message itself */
-	if ((cardnum = cp_get_cardnum(nncards.cardfile)) == -1)
+	if ((cardnum = cp_get_cardnum(nncards.cardfile)) == -1) {
+		fprintf(stderr, "Could not parse %s\n", nncards.cardfile);
 		return -1;
+	}
 
 	currcard = (nncards.initcard > 0 && nncards.initcard <= cardnum)
 		? nncards.initcard - 1 : 0;
 
 	deck = cp_get_cards(nncards.cardfile, cardnum);
 
-	if (deck == NULL)
+	if (deck == NULL) {
+		fprintf(stderr, "Could not parse %s\n", nncards.cardfile);
 		return -1;
+	}
 
 	if (nncards.first_side == TERM)
 		cp_side_swap(deck, cardnum);
