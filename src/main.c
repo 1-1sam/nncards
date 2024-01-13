@@ -1,6 +1,5 @@
 #include "run.h"
 
-/* TODO: Return 1 if something went wrong. */
 int
 main(int argc, char** argv) {
 
