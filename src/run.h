@@ -1,7 +1,7 @@
 typedef int flag_t;
 
 struct nncards {
-	flag_t run;
+	enum { RUN, NORUN, ERROR } run_state;
 	char* cardfile;
 	enum { TERM, DEFINITION } first_side;
 	flag_t random;

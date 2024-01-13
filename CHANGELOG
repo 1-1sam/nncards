@@ -17,6 +17,7 @@ Changes:
     custom LDFLAGS.
   - Updated termbox.h to termbox2.h.
   - Clearer error messages.
+  - Now returns 0 on success and 1 on error.
 
 1.0 -> 2.0 (10/28/2023)
 Added:

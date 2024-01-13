@@ -19,7 +19,7 @@
 typedef int flag_t;
 
 struct nncards {
-	flag_t run;
+	enum { RUN, NORUN, ERROR } run_state;
 	char* cardfile;
 	enum { TERM, DEFINITION } first_side;
 	flag_t random;
@@ -94,8 +94,8 @@ struct nncards
 nnc_init(int argc, char** argv) {
 
 	int c;
-	struct nncards nnc_return = {
-		.run = 1,
+	struct nncards nncards = {
+		.run_state = RUN,
 		.cardfile = NULL,
 		.first_side = DEFINITION,
 		.random = 0,
@@ -115,40 +115,40 @@ nnc_init(int argc, char** argv) {
 
 		switch (c) {
 			case 'c':
-				nnc_return.initcard = strtol(optarg, NULL, 10);
+				nncards.initcard = strtol(optarg, NULL, 10);
 				break;
 			case 'r':
-				nnc_return.random = 1;
+				nncards.random = 1;
 				break;
 			case 't':
-				nnc_return.first_side = TERM;
+				nncards.first_side = TERM;
 				break;
 			case 'h':
-				nnc_return.run = 0;
+				nncards.run_state = NORUN;
 				_print_help();
-				return nnc_return;
+				return nncards;
 			case 'v':
-				nnc_return.run = 0;
+				nncards.run_state = NORUN;
 				_print_version();
-				return nnc_return;
+				return nncards;
 			case '?':
-				nnc_return.run = 0;
-				return nnc_return;
+				nncards.run_state = ERROR;
+				return nncards;
 			default:
 				fprintf(stderr, "Error parsing options\n");
-				nnc_return.run = 0;
-				return nnc_return;
+				nncards.run_state = ERROR;
+				return nncards;
 		}
 	}
 
 	if (optind < argc) {
-		nnc_return.cardfile = argv[optind];
+		nncards.cardfile = argv[optind];
 	} else {
 		_print_help();
-		nnc_return.run = 0;
+		nncards.run_state = ERROR;
 	}
 
-	return nnc_return;
+	return nncards;
 }
 
 int
@@ -163,12 +163,12 @@ nnc_main_loop(struct nncards nncards) {
 
 	if (access(nncards.cardfile, R_OK) != 0) {
 		fprintf(stderr, "%s: Cannot be opened\n", nncards.cardfile);
-		return -1;
+		return 1;
 	}
 
 	if ((cardnum = cp_get_cardnum(nncards.cardfile)) == -1) {
 		fprintf(stderr, "Could not parse %s\n", nncards.cardfile);
-		return -1;
+		return 1;
 	}
 
 	if (nncards.initcard > 0 && nncards.initcard <= cardnum) {
@@ -181,7 +181,7 @@ nnc_main_loop(struct nncards nncards) {
 
 	if (deck == NULL) {
 		fprintf(stderr, "Could not parse %s\n", nncards.cardfile);
-		return -1;
+		return 1;
 	}
 
 	if (nncards.first_side == TERM)
@@ -189,7 +189,7 @@ nnc_main_loop(struct nncards nncards) {
 
 	if (nncards.random) {
 		if (cp_card_shuffle(deck, cardnum) == -1)
-			return -1;
+			return 1;
 	}
 
 	/*
