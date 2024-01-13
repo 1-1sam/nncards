@@ -171,8 +171,11 @@ nnc_main_loop(struct nncards nncards) {
 		return -1;
 	}
 
-	currcard = (nncards.initcard > 0 && nncards.initcard <= cardnum)
-		? nncards.initcard - 1 : 0;
+	if (nncards.initcard > 0 && nncards.initcard <= cardnum) {
+		currcard = nncards.initcard - 1;
+	} else {
+		currcard = 0;
+	}
 
 	deck = cp_get_cards(nncards.cardfile, cardnum);
 
