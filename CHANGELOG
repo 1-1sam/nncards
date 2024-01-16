@@ -1,10 +1,9 @@
-2.0 -> 1/12/2024
+2.0 -> 1/16/2024
 Added:
   - nncards can now be compiled with a desired version through the
     nncards_version variable. For example:
       make nncards_version=2.0-1+deb12u1
   - Added long options alongside the short options:
-    -c has --at
     -r has --random
     -t has --terms-first
     -h has --help
@@ -18,6 +17,9 @@ Changes:
   - Updated termbox.h to termbox2.h.
   - Clearer error messages.
   - Now returns 0 on success and 1 on error.
+
+Removed:
+ - -c option.
 
 1.0 -> 2.0 (10/28/2023)
 Added:

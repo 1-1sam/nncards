@@ -5,7 +5,6 @@ struct nncards {
 	char* cardfile;
 	enum { TERM, DEFINITION } first_side;
 	flag_t random;
-	int initcard;
 };
 
 struct nncards nnc_init(int argc, char** argv);

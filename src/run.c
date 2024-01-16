@@ -23,18 +23,16 @@ struct nncards {
 	char* cardfile;
 	enum { TERM, DEFINITION } first_side;
 	flag_t random;
-	int initcard;
 };
 
 static void
 _print_help(void) {
 
 	printf("nncards - %s\n", NNC_VERSION);
-	printf("Usage: nncards [-trhv] [-c number] file\n\n");
+	printf("Usage: nncards [-trhv] file\n\n");
 	printf("Options:\n");
 	printf("	-r             --random        Randomize the order that the cards are shown in.\n");
 	printf("	-t             --terms-first   Show terms first rather than definitions.\n");
-	printf("	-c <number>    --at=<number>   Start at the nth card.\n");
 	printf("	-h             --help          Print this help message.\n");
 	printf("	-v             --version       Print program version.\n");
 
@@ -99,11 +97,9 @@ nnc_init(int argc, char** argv) {
 		.cardfile = NULL,
 		.first_side = DEFINITION,
 		.random = 0,
-		.initcard = 0,
 	};
 
 	struct option long_options[] = {
-		{ "at", required_argument, 0, 'c' },
 		{ "random", no_argument, 0, 'r' },
 		{ "terms-first", no_argument, 0, 't' },
 		{ "help", no_argument, 0, 'h' },
@@ -111,12 +107,9 @@ nnc_init(int argc, char** argv) {
 		{ 0, 0, 0, 0 }
 	};
 
-	while ((c = getopt_long(argc, argv, "c:rthv", long_options, NULL)) != -1 ) {
+	while ((c = getopt_long(argc, argv, "rthv", long_options, NULL)) != -1 ) {
 
 		switch (c) {
-			case 'c':
-				nncards.initcard = strtol(optarg, NULL, 10);
-				break;
 			case 'r':
 				nncards.random = 1;
 				break;
@@ -157,7 +150,7 @@ nnc_main_loop(struct nncards nncards) {
 	int cardnum;
 	struct card* deck;
 	struct tb_event ev;
-	int currcard;
+	int currcard = 0;
 	char* currstr;
 	char* filename;
 
@@ -169,12 +162,6 @@ nnc_main_loop(struct nncards nncards) {
 	if ((cardnum = cp_get_cardnum(nncards.cardfile)) == -1) {
 		fprintf(stderr, "Could not parse %s\n", nncards.cardfile);
 		return 1;
-	}
-
-	if (nncards.initcard > 0 && nncards.initcard <= cardnum) {
-		currcard = nncards.initcard - 1;
-	} else {
-		currcard = 0;
 	}
 
 	deck = cp_get_cards(nncards.cardfile, cardnum);
