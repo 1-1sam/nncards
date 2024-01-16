@@ -16,24 +16,29 @@ cp_get_cardnum(char* filename) {
 
 	FILE* cardfile = fopen(filename, "r");
 	int cardnum = 0;
-	char line[MY_BUFSIZE];
+	char* line = NULL;
+	size_t linelen;
 
-	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
+	while (getline(&line, &linelen, cardfile) != -1) {
 
-		if (line[0] == '#' || line[0] == '\n')
+		if (line[0] == '#' || line[0] == '\n') {
 			continue;
-
-		if (strchr(line, ':') != NULL) {
-			cardnum++;
-		} else {
-			fprintf(stderr, "%s: Invalid line (line %d)\n",
-				filename, cardnum + 1);
-			cardnum = -1;
-			break;
 		}
+
+		if (strchr(line, ':') == NULL) {
+			fprintf(stderr, "Bad line: %d\n", cardnum + 1);
+			free(line);
+			fclose(cardfile);
+			return -1;
+		}
+
+		cardnum++;
+
 	}
 
+	free(line);
 	fclose(cardfile);
+
 	return cardnum;
 
 }
@@ -44,7 +49,8 @@ cp_get_cards(char* filename, int cardnum) {
 	struct card* cards;
 	FILE* cardfile = fopen(filename, "r");
 	int cc = 0;
-	char line[MY_BUFSIZE];
+	char* line = NULL;
+	size_t linelen;
 	char *s1, *s2;
 
 	cards = malloc(sizeof(struct card) * cardnum);
@@ -54,7 +60,7 @@ cp_get_cards(char* filename, int cardnum) {
 		return NULL;
 	}
 
-	while (fgets(line, MY_BUFSIZE, cardfile) != NULL) {
+	while (getline(&line, &linelen, cardfile) != -1) {
 
 		if (line[0] == '#' || line[0] == '\n')
 			continue;
@@ -86,6 +92,7 @@ cp_get_cards(char* filename, int cardnum) {
 
 	}
 
+	free(line);
 	fclose(cardfile);
 	return cards;
 

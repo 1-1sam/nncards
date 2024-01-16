@@ -17,6 +17,7 @@ Changes:
   - Updated termbox.h to termbox2.h.
   - Clearer error messages.
   - Now returns 0 on success and 1 on error.
+  - Can now completely read lines longer than 1024 characters.
 
 Removed:
  - -c option.
