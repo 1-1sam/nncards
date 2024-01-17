@@ -1,5 +1,5 @@
 # nncards
-**nncards** is a simple TUI flashcard program written in C99. It creates
+**nncards** is a simple TUI flashcard program written in C. It creates
 flashcards from a given card file.
 
 ## Usage
