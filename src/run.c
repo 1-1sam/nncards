@@ -30,7 +30,7 @@ static void
 _print_help(void) {
 
 	printf("nncards - %s\n", NNC_VERSION);
-	printf("Usage: nncards [-trhv] file\n\n");
+	printf("Usage: nncards [-trhv] FILE...\n\n");
 	printf("Options:\n");
 	printf("	-r             --random        Randomize the order that the cards are shown in.\n");
 	printf("	-t             --terms-first   Show terms first rather than definitions.\n");
