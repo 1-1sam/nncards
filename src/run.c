@@ -32,11 +32,11 @@ _print_help(void) {
 	printf("nncards - %s\n", NNC_VERSION);
 	printf("Usage: nncards [-trhuv] FILE...\n\n");
 	printf("Options:\n");
-	printf(" -r             --random        Randomize the order that the cards are shown in.\n");
-	printf(" -t             --terms-first   Show terms first rather than definitions.\n");
-	printf(" -h             --help          Print this help message.\n");
-	printf(" -u             --usage         Print program usage message.\n");
-	printf(" -v             --version       Print program version.\n");
+	printf(" -r    --random        Randomize the order that the cards are shown in.\n");
+	printf(" -t    --terms-first   Show terms first rather than definitions.\n");
+	printf(" -h    --help          Print this help message.\n");
+	printf(" -u    --usage         Print program usage message.\n");
+	printf(" -v    --version       Print program version.\n");
 
 }
 
