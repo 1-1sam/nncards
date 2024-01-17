@@ -11,13 +11,18 @@ struct card {
 	char* side2;
 };
 
-int
-cp_get_cardnum(char* filename) {
+struct deck {
+	struct card* cards;
+	int cardnum;
+};
+
+static int
+_get_cardnum(char* filename) {
 
 	FILE* cardfile = fopen(filename, "r");
 	int cardnum = 0;
 	char* line = NULL;
-	size_t linelen;
+	size_t linelen = 0;
 
 	while (getline(&line, &linelen, cardfile) != -1) {
 
@@ -43,83 +48,126 @@ cp_get_cardnum(char* filename) {
 
 }
 
-struct card*
-cp_get_cards(char* filename, int cardnum) {
+int
+cp_get_cards(struct deck* deck, char** files, int filenum) {
 
-	struct card* cards;
-	FILE* cardfile = fopen(filename, "r");
-	int cc = 0;
 	char* line = NULL;
 	size_t linelen;
-	char *s1, *s2;
+	int cc = 0;
 
-	cards = malloc(sizeof(struct card) * cardnum);
+	deck->cardnum = 0;
 
-	if (cards == NULL) {
-		fprintf(stderr, "Failed to allocate memory\n");
-		return NULL;
-	}
+	for (int i = 0; i < filenum; i++) {
 
-	while (getline(&line, &linelen, cardfile) != -1) {
+		int ccn;
 
-		if (line[0] == '#' || line[0] == '\n')
-			continue;
-
-		/* The newline messes up the TUI rendering */
-		*(strchr(line, '\n')) = '\0';
-
-		/* Tabs mess up the TUI rendering, replace them with spaces */
-		for (int i = 0; line[i] != '\0'; i++) {
-			if (line[i] == '\t')
-				line[i] = ' ';
+		if ((ccn = _get_cardnum(files[i])) == -1) {
+			return -1;
 		}
 
-		/* Getting side1 (the definition) */
-		if ((s1 = strchr(line, ':')) == NULL)
-			continue;
+		deck->cardnum += ccn;
 
-		while (isblank(*(++s1)))
-			;
+	}
 
-		cards[cc].side1 = strdup(s1);
+	deck->cards = malloc(sizeof(struct card) * deck->cardnum);
 
-		/* Getting side2 (the term) */
-		s2 = line;
+	if (deck->cards == NULL) {
+		fprintf(stderr, "Could not allocate memory\n");
+		return -1;
+	}
 
-		*(strchr(s2, ':')) = '\0';
+	for (int i = 0; i < filenum; i++) {
 
-		cards[cc++].side2 = strdup(s2);
+		FILE* file = fopen(files[i], "r");
+		char *d, *t;
+
+		while (getline(&line, &linelen, file) != -1) {
+
+			if (line[0] == '#' || line[0] == '\n')
+				continue;
+
+			*(strchr(line, '\n')) = '\0';
+
+			/* Tabs mess up the TUI rendering, replace them with spaces */
+			for (int i = 0; line[i] != '\0'; i++) {
+				if (line[i] == '\t')
+					line[i] = ' ';
+			}
+
+			/* Getting side1 (the definition) */
+			//if ((d = strchr(line, ':')) == NULL)
+			//	continue;
+			d = strchr(line, ':');
+
+			while (isblank(*(++d)))
+				;
+
+			 deck->cards[cc].side1 = strdup(d);
+
+			if (deck->cards[cc].side1 == NULL) {
+				fprintf(stderr, "Could not allocate memory\n");
+				for (int i = 0; i < cc; i++) {
+					free(deck->cards[i].side1);
+					free(deck->cards[i].side2);
+				}
+				free(deck->cards);
+				fclose(file);
+				return -1;
+			}
+
+			/* Getting side2 (the term) */
+			t = line;
+
+			*(strchr(t, ':')) = '\0';
+
+			deck->cards[cc++].side2 = strdup(t);
+
+			if (deck->cards[cc - 1].side2 == NULL) {
+				fprintf(stderr, "Could not allocate memory\n");
+				for (int i = 0; i < cc - 1; i++) {
+					free(deck->cards[i].side1);
+					free(deck->cards[i].side2);
+				}
+				free(deck->cards[cc - 1].side1);
+				free(deck->cards);
+				fclose(file);
+				return -1;
+			}
+
+		}
+
+		fclose(file);
 
 	}
 
 	free(line);
-	fclose(cardfile);
-	return cards;
+
+	return 0;
 
 }
 
 int
-cp_card_shuffle(struct card* cards, int cardnum) {
+cp_card_shuffle(struct deck deck) {
 
 	struct card* tmpcards;
 	int r;
 
 	srand(time(NULL));
 
-	tmpcards = malloc(sizeof(struct card) * cardnum);
+	tmpcards = malloc(sizeof(struct card) * deck.cardnum);
 
 	if (tmpcards == NULL) {
 		fprintf(stderr, "Failed to allocate memory\n");
 		return -1;
 	}
 
-	memcpy(tmpcards, cards, sizeof(struct card) * cardnum);
+	memcpy(tmpcards, deck.cards, sizeof(struct card) * deck.cardnum);
 
-	for (int i = 0, cardsleft = cardnum; cardsleft > 0; i++, cardsleft--) {
+	for (int i = 0, cardsleft = deck.cardnum; cardsleft > 0; i++, cardsleft--) {
 
 		r = rand() % cardsleft;
 
-		cards[i] = tmpcards[r];
+		deck.cards[i] = tmpcards[r];
 		tmpcards[r] = tmpcards[cardsleft - 1];
 	}
 
@@ -129,13 +177,13 @@ cp_card_shuffle(struct card* cards, int cardnum) {
 }
 
 void
-cp_side_swap(struct card* cards, int cardnum) {
+cp_side_swap(struct deck deck) {
 
-	char* tmpptr;
+	char* p;
 
-	for (int i = 0; i < cardnum; i++) {
-		tmpptr = cards[i].side1;
-		cards[i].side1 = cards[i].side2;
-		cards[i].side2 = tmpptr;
+	for (int i = 0; i < deck.cardnum; i++) {
+		p = deck.cards[i].side1;
+		deck.cards[i].side1 = deck.cards[i].side2;
+		deck.cards[i].side2 = p;
 	}
 }

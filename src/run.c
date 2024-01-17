@@ -20,7 +20,8 @@ typedef int flag_t;
 
 struct nncards {
 	enum { RUN, NORUN, ERROR } run_state;
-	char* cardfile;
+	char** cardfiles;
+	int filenum;
 	enum { TERM, DEFINITION } first_side;
 	flag_t random;
 };
@@ -76,25 +77,14 @@ _event_parse(struct tb_event ev) {
 
 }
 
-static void
-_burn_deck(struct card* deck, int cardnum) {
-
-	for (int i = 0; i < cardnum; i++) {
-		free(deck[i].side1);
-		free(deck[i].side2);
-	}
-
-	free(deck);
-
-}
-
 struct nncards
 nnc_init(int argc, char** argv) {
 
 	int c;
 	struct nncards nncards = {
 		.run_state = RUN,
-		.cardfile = NULL,
+		.cardfiles = NULL,
+		.filenum = 0,
 		.first_side = DEFINITION,
 		.random = 0,
 	};
@@ -134,12 +124,15 @@ nnc_init(int argc, char** argv) {
 		}
 	}
 
-	if (optind < argc) {
-		nncards.cardfile = argv[optind];
-	} else {
+	/* No file arguments were given */
+	if (optind == argc) {
 		_print_help();
 		nncards.run_state = ERROR;
+		return nncards;
 	}
+
+	nncards.filenum = argc - optind;
+	nncards.cardfiles = &argv[optind];
 
 	return nncards;
 }
@@ -147,48 +140,33 @@ nnc_init(int argc, char** argv) {
 int
 nnc_main_loop(struct nncards nncards) {
 
-	int cardnum;
-	struct card* deck;
+	struct deck deck;
 	struct tb_event ev;
 	int currcard = 0;
 	char* currstr;
-	char* filename;
 
-	if (access(nncards.cardfile, R_OK) != 0) {
-		fprintf(stderr, "%s: Cannot be opened\n", nncards.cardfile);
-		return 1;
+	for (int i = 0; i < nncards.filenum; i++) {
+		if (access(nncards.cardfiles[i], R_OK) != 0) {
+			fprintf(stderr, "%s: Cannot be opened\n", nncards.cardfiles[i]);
+			return 1;
+		}
 	}
 
-	if ((cardnum = cp_get_cardnum(nncards.cardfile)) == -1) {
-		fprintf(stderr, "Could not parse %s\n", nncards.cardfile);
-		return 1;
-	}
-
-	deck = cp_get_cards(nncards.cardfile, cardnum);
-
-	if (deck == NULL) {
-		fprintf(stderr, "Could not parse %s\n", nncards.cardfile);
+	if (cp_get_cards(&deck, nncards.cardfiles, nncards.filenum) == -1) {
+		fprintf(stderr, "nncards failed to run\n");
 		return 1;
 	}
 
 	if (nncards.first_side == TERM)
-		cp_side_swap(deck, cardnum);
+		cp_side_swap(deck);
 
 	if (nncards.random) {
-		if (cp_card_shuffle(deck, cardnum) == -1)
+		if (cp_card_shuffle(deck) == -1) {
 			return 1;
+		}
 	}
 
-	/*
-	 * Get a pointer to the character after the last slash, which should point
-	 * to file name.
-	 */
-	if ((filename = strrchr(nncards.cardfile, '/')) != NULL)
-		filename++;
-	else
-		filename = nncards.cardfile;
-
-	currstr = deck[currcard].side1;
+	currstr = deck.cards[0].side1;
 
 	tb_init();
 
@@ -198,32 +176,37 @@ nnc_main_loop(struct nncards nncards) {
 
 		tui_update_size();
 		tui_draw_card(currstr);
-		tui_draw_info(filename, currcard + 1, cardnum);
+		tui_draw_info(currcard, deck.cardnum, nncards.cardfiles,
+			nncards.filenum);
 
 		tb_poll_event(&ev);
 
 		switch (_event_parse(ev)) {
 			case NNC_NEXT:
-				if (currcard < cardnum - 1)
-					currstr = deck[++currcard].side1;
+				if (currcard < deck.cardnum - 1)
+					currstr = deck.cards[++currcard].side1;
 				break;
 			case NNC_PREV:
 				if (currcard > 0)
-					currstr = deck[--currcard].side1;
+					currstr = deck.cards[--currcard].side1;
 				break;
 			case NNC_FLIP:
-				currstr = (currstr == deck[currcard].side1)
-					? deck[currcard].side2 : deck[currcard].side1;
+				currstr = (currstr == deck.cards[currcard].side1)
+					? deck.cards[currcard].side2 : deck.cards[currcard].side1;
 				break;
 			case NNC_FRST:
-				currstr = deck[currcard = 0].side1;
+				currstr = deck.cards[currcard = 0].side1;
 				break;
 			case NNC_LAST:
-				currstr = deck[currcard = cardnum - 1].side1;
+				currstr = deck.cards[currcard = deck.cardnum - 1].side1;
 				break;
 			case NNC_QUIT:
 				tb_shutdown();
-				_burn_deck(deck, cardnum);
+				for (int i = 0; i < deck.cardnum; i++) {
+					free(deck.cards[i].side1);
+					free(deck.cards[i].side2);
+				}
+				free(deck.cards);
 				return 0;
 			default: break;
 		}

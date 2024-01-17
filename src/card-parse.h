@@ -3,7 +3,11 @@ struct card {
 	char* side2;
 };
 
-int          cp_get_cardnum(char* filename);
-struct card* cp_get_cards(char* filename, int cardnum);
-int          cp_card_shuffle(struct card* cards, int cardnum);
-void         cp_side_swap(struct card* cards, int cardnum);
+struct deck {
+	struct card* cards;
+	int cardnum;
+};
+
+int  cp_get_cards(struct deck* deck, char** files, int filenum);
+int  cp_card_shuffle(struct deck deck);
+void cp_side_swap(struct deck deck);

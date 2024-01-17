@@ -4,6 +4,9 @@
 #define TB_IMPL
 #include "termbox2.h"
 
+/* Maximum number of characters I've arbitrarily decided for the info bar. */
+#define BARMAX 255
+
 int h, w;
 
 static void
@@ -71,9 +74,18 @@ tui_draw_card(char* str) {
 }
 
 void
-tui_draw_info(char* filename, int currcard, int cardnum) {
+tui_draw_info(int currcard, int cardnum, char** files, int filenum) {
 
-	tb_printf(0, h - 1, 0, 0, "[%d/%d] %s", currcard, cardnum, filename);
+	char text[BARMAX + 1];
+
+	snprintf(text, BARMAX, "[%d/%d] ", currcard + 1, cardnum);
+
+	for (int i = 0; i < filenum; i++) {
+		strncat(text, files[i], BARMAX - strlen(text) - 1);
+		strcat(text, " ");
+	}
+
+	tb_printf(0, h - 1, 0, 0, "%s", text);
 
 	tb_present();
 

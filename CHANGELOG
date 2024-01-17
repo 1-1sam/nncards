@@ -9,6 +9,8 @@ Added:
     -h has --help
     -v has --version
   - Manual includes a sample card file.
+  - nncards can now accept multiple card files as arguments. The cards from each
+    file are combined together.
 
 Changes:
   - Removed install-doc.
@@ -18,6 +20,7 @@ Changes:
   - Clearer error messages.
   - Now returns 0 on success and 1 on error.
   - Can now completely read lines longer than 1024 characters.
+  - Info bar now displays given paths again rather just file names.
 
 Removed:
  - -c option.
