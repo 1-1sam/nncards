@@ -11,6 +11,7 @@ Added:
   - Manual includes a sample card file.
   - nncards can now accept multiple card files as arguments. The cards from each
     file are combined together.
+  - -u/--usage: Print program usage.
 
 Changes:
   - Removed install-doc.

@@ -30,12 +30,20 @@ static void
 _print_help(void) {
 
 	printf("nncards - %s\n", NNC_VERSION);
-	printf("Usage: nncards [-trhv] FILE...\n\n");
+	printf("Usage: nncards [-trhuv] FILE...\n\n");
 	printf("Options:\n");
-	printf("	-r             --random        Randomize the order that the cards are shown in.\n");
-	printf("	-t             --terms-first   Show terms first rather than definitions.\n");
-	printf("	-h             --help          Print this help message.\n");
-	printf("	-v             --version       Print program version.\n");
+	printf(" -r             --random        Randomize the order that the cards are shown in.\n");
+	printf(" -t             --terms-first   Show terms first rather than definitions.\n");
+	printf(" -h             --help          Print this help message.\n");
+	printf(" -u	            --usage         Print program usage message.\n");
+	printf(" -v             --version       Print program version.\n");
+
+}
+
+static void
+_print_usage(void) {
+
+	printf("Usage: nncards [-trhuv] FILE...\n");
 
 }
 
@@ -93,11 +101,12 @@ nnc_init(int argc, char** argv) {
 		{ "random", no_argument, 0, 'r' },
 		{ "terms-first", no_argument, 0, 't' },
 		{ "help", no_argument, 0, 'h' },
+		{ "usage", no_argument, 0, 'u' },
 		{ "version", no_argument, 0, 'v' },
 		{ 0, 0, 0, 0 }
 	};
 
-	while ((c = getopt_long(argc, argv, "rthv", long_options, NULL)) != -1 ) {
+	while ((c = getopt_long(argc, argv, "rthuv", long_options, NULL)) != -1 ) {
 
 		switch (c) {
 			case 'r':
@@ -109,6 +118,10 @@ nnc_init(int argc, char** argv) {
 			case 'h':
 				nncards.run_state = NORUN;
 				_print_help();
+				return nncards;
+			case 'u':
+				nncards.run_state = NORUN;
+				_print_usage();
 				return nncards;
 			case 'v':
 				nncards.run_state = NORUN;
