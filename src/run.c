@@ -13,7 +13,7 @@
 #define NNC_QUIT 5
 
 #ifndef NNC_VERSION
- #define NNC_VERSION "2.0"
+ #define NNC_VERSION "3.0"
 #endif
 
 typedef int flag_t;
