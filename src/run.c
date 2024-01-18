@@ -13,10 +13,19 @@
 #define NNC_QUIT 5
 
 #ifndef NNC_VERSION
-#define NNC_VERSION "2.0"
+ #define NNC_VERSION "2.0"
 #endif
 
 typedef int flag_t;
+
+enum nncards_commands {
+	NEXT,
+	PREV,
+	FLIP,
+	LAST,
+	FIRST,
+	QUIT,
+};
 
 struct nncards {
 	enum { RUN, NORUN, ERROR } run_state;
@@ -54,30 +63,30 @@ _print_version(void) {
 
 }
 
-static int
+static enum nncards_commands
 _event_parse(struct tb_event ev) {
 
 	switch (ev.ch) {
-		case 'c': return NNC_NEXT;
-		case 'l': return NNC_NEXT;
-		case 'z': return NNC_PREV;
-		case 'h': return NNC_PREV;
-		case 'x': return NNC_FLIP;
-		case ' ': return NNC_FLIP;
-		case 'd': return NNC_LAST;
-		case 'a': return NNC_FRST;
-		case 'q': return NNC_QUIT;
+		case 'c': return NEXT;
+		case 'l': return NEXT;
+		case 'z': return PREV;
+		case 'h': return PREV;
+		case 'x': return FLIP;
+		case ' ': return FLIP;
+		case 'd': return LAST;
+		case 'a': return FIRST;
+		case 'q': return QUIT;
 		default: break;
 	}
 
 	switch (ev.key) {
-		case TB_KEY_ARROW_RIGHT:  return NNC_NEXT;
-		case TB_KEY_ARROW_LEFT:   return NNC_PREV;
-		case TB_KEY_ARROW_UP:     return NNC_FLIP;
-		case TB_KEY_ARROW_DOWN:   return NNC_FLIP;
-		case TB_KEY_PGDN:         return NNC_LAST;
-		case TB_KEY_PGUP:         return NNC_FRST;
-		case TB_KEY_ESC:          return NNC_QUIT;
+		case TB_KEY_ARROW_RIGHT:  return NEXT;
+		case TB_KEY_ARROW_LEFT:   return PREV;
+		case TB_KEY_ARROW_UP:     return FLIP;
+		case TB_KEY_ARROW_DOWN:   return FLIP;
+		case TB_KEY_PGDN:         return LAST;
+		case TB_KEY_PGUP:         return FIRST;
+		case TB_KEY_ESC:          return QUIT;
 		default: break;
 	}
 
@@ -195,25 +204,25 @@ nnc_main_loop(struct nncards nncards) {
 		tb_poll_event(&ev);
 
 		switch (_event_parse(ev)) {
-			case NNC_NEXT:
+			case NEXT:
 				if (currcard < deck.cardnum - 1)
 					currstr = deck.cards[++currcard].side1;
 				break;
-			case NNC_PREV:
+			case PREV:
 				if (currcard > 0)
 					currstr = deck.cards[--currcard].side1;
 				break;
-			case NNC_FLIP:
+			case FLIP:
 				currstr = (currstr == deck.cards[currcard].side1)
 					? deck.cards[currcard].side2 : deck.cards[currcard].side1;
 				break;
-			case NNC_FRST:
+			case FIRST:
 				currstr = deck.cards[currcard = 0].side1;
 				break;
-			case NNC_LAST:
+			case LAST:
 				currstr = deck.cards[currcard = deck.cardnum - 1].side1;
 				break;
-			case NNC_QUIT:
+			case QUIT:
 				tb_shutdown();
 				for (int i = 0; i < deck.cardnum; i++) {
 					free(deck.cards[i].side1);
