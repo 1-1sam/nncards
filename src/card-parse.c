@@ -95,9 +95,8 @@ cp_get_cards(struct deck* deck, char** files, int filenum) {
 			}
 
 			/* Getting side1 (the definition) */
-			//if ((d = strchr(line, ':')) == NULL)
-			//	continue;
-			d = strchr(line, ':');
+			if ((d = strchr(line, ':')) == NULL)
+				continue;
 
 			while (isblank(*(++d)))
 				;
