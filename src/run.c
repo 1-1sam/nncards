@@ -5,13 +5,6 @@
 #include "tui.h"
 #include "card-parse.h"
 
-#define NNC_NEXT 0
-#define NNC_PREV 1
-#define NNC_FLIP 2
-#define NNC_LAST 3
-#define NNC_FRST 4
-#define NNC_QUIT 5
-
 #ifndef NNC_VERSION
  #define NNC_VERSION "3.0"
 #endif
