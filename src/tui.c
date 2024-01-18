@@ -7,6 +7,13 @@
 /* Maximum number of characters I've arbitrarily decided for the info bar. */
 #define BARMAX 255
 
+#define BOX_UR_CORNER 0x250C
+#define BOX_BR_CORNER 0x2514
+#define BOX_UL_CORNER 0x2510
+#define BOX_BL_CORNER 0x2518
+#define BOX_HORZ_LINE 0x2500
+#define BOX_VERT_LINE 0x2502
+
 int h, w;
 
 static void
@@ -46,26 +53,22 @@ void
 tui_draw_card(char* str) {
 
 	/* Drawing corners. */
-	tb_set_cell(1, 2, 0x250C, 0, 0);
-	tb_set_cell(1, h - 3, 0x2514, 0, 0);
-	tb_set_cell(w - 2, 2, 0x2510, 0, 0);
-	tb_set_cell(w - 2, h - 3, 0x2518, 0, 0);
+	tb_set_cell(1, 2, BOX_UR_CORNER, 0, 0);
+	tb_set_cell(1, h - 3, BOX_BR_CORNER, 0, 0);
+	tb_set_cell(w - 2, 2, BOX_UL_CORNER, 0, 0);
+	tb_set_cell(w - 2, h - 3, BOX_BL_CORNER, 0, 0);
 
-	/* Drawing top line. */
-	for (int i = 2; i < w - 2; i++)
-		tb_set_cell(i, 2, 0x2500, 0, 0);
+	/* Drawing top and bottom line. */
+	for (int i = 2; i < w - 2; i++) {
+		tb_set_cell(i, 2, BOX_HORZ_LINE, 0, 0);
+		tb_set_cell(i, h - 3, BOX_HORZ_LINE, 0, 0);
+	}
 
-	/* Draw bottom line. */
-	for (int i = 2; i < w - 2; i++)
-		tb_set_cell(i, h - 3, 0x2500, 0, 0);
-
-	/* Drawing right line. */
-	for (int i = 3; i < h - 3; i++)
-		tb_set_cell(w - 2, i, 0x2502, 0, 0);
-
-	/* Drawing left line. */
-	for (int i = 3; i < h - 3; i++)
-		tb_set_cell(1, i, 0x2502, 0, 0);
+	/* Drawing right and left line. */
+	for (int i = 3; i < h - 3; i++) {
+		tb_set_cell(w - 2, i, BOX_VERT_LINE, 0, 0);
+		tb_set_cell(1, i, BOX_VERT_LINE, 0, 0);
+	}
 
 	_text_print(str);
 
