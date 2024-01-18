@@ -6,7 +6,7 @@
 #include "card-parse.h"
 
 #ifndef NNC_VERSION
- #define NNC_VERSION "3.0"
+ #define NNC_VERSION "3.1"
 #endif
 
 typedef int flag_t;

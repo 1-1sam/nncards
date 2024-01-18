@@ -1,6 +1,9 @@
-3.0 -> (1/18/2024)
+3.0 -> 3.1 (1/18/2024)
 Changes:
   - Manual is installed to <DESTDIR>/<PREFIX>/<MANDIR> in make install.
+
+Fixes:
+  - Removed -c from usage section in manual.
 
 2.0 -> 3.0 (1/16/2024)
 Added:
