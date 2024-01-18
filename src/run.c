@@ -168,12 +168,12 @@ nnc_main_loop(struct nncards nncards) {
 	}
 
 	if (cp_get_cards(&deck, nncards.cardfiles, nncards.filenum) == -1) {
-		fprintf(stderr, "nncards failed to run\n");
 		return 1;
 	}
 
-	if (nncards.first_side == TERM)
+	if (nncards.first_side == TERM) {
 		cp_side_swap(deck);
+	}
 
 	if (nncards.random) {
 		if (cp_card_shuffle(deck) == -1) {
