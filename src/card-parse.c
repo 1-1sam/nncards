@@ -4,8 +4,6 @@
 #include <time.h>
 #include <ctype.h>
 
-#define MY_BUFSIZE 1024
-
 struct card {
 	char* side1;
 	char* side2;
