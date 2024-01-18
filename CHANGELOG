@@ -1,3 +1,7 @@
+3.0 -> (1/18/2024)
+Changes:
+  - Manual is installed to <DESTDIR>/<PREFIX>/<MANDIR> in make install.
+
 2.0 -> 3.0 (1/16/2024)
 Added:
   - nncards can now be compiled with a desired version through the
