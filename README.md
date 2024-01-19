@@ -40,7 +40,7 @@ The nncards_version variable can be set if you wish to compile nncards with a
 special version number.
 
 ```bash
-make nncards_version=2.0-r2
+make nncards_version=13.37
 ```
 
 ## Credit
