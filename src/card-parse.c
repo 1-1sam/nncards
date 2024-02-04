@@ -67,9 +67,7 @@ cp_get_cards(struct deck* deck, char** files, int filenum) {
 
 	}
 
-	deck->cards = malloc(sizeof(struct card) * deck->cardnum);
-
-	if (deck->cards == NULL) {
+	if ((deck->cards = malloc(sizeof(struct card) * deck->cardnum)) == NULL) {
 		fprintf(stderr, "Could not allocate memory\n");
 		return -1;
 	}
@@ -117,19 +115,19 @@ cp_get_cards(struct deck* deck, char** files, int filenum) {
 
 			*(strchr(t, ':')) = '\0';
 
-			deck->cards[cc++].side2 = strdup(t);
-
-			if (deck->cards[cc - 1].side2 == NULL) {
+			if ((deck->cards[cc].side2 = strdup(t))  == NULL) {
 				fprintf(stderr, "Could not allocate memory\n");
-				for (int i = 0; i < cc - 1; i++) {
+				for (int i = 0; i < cc; i++) {
 					free(deck->cards[i].side1);
 					free(deck->cards[i].side2);
 				}
-				free(deck->cards[cc - 1].side1);
+				free(deck->cards[cc].side1);
 				free(deck->cards);
 				fclose(file);
 				return -1;
 			}
+
+			cc++;
 
 		}
 
