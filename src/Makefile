@@ -16,3 +16,5 @@ $(nncards_objects): %.o: %.c
 
 clean:
 	rm nncards $(nncards_objects)
+
+.PHONY: all clean

@@ -13,3 +13,5 @@ install: src/nncards
 
 clean:
 	make clean -C src
+
+.PHONY: build install clean
