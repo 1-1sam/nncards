@@ -3,7 +3,7 @@ BINDIR ?= /bin
 MANDIR ?= /man/man1
 
 build:
-	make -C src
+	$(MAKE) -C src
 
 install: src/nncards
 	install -v -d $(DESTDIR)$(PREFIX)$(BINDIR)
@@ -12,6 +12,6 @@ install: src/nncards
 	install -v -m 644 man/nncards.1 $(DESTDIR)$(PREFIX)$(MANDIR)
 
 clean:
-	make clean -C src
+	$(MAKE) clean -C src
 
 .PHONY: build install clean
