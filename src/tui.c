@@ -2,6 +2,8 @@
 #include <string.h>
 
 #define TB_IMPL
+#include "termbox2.h"
+
 #include "tui.h"
 
 /* Maximum number of characters I've arbitrarily decided for the info bar. */
@@ -42,10 +44,66 @@ _text_print(char* str) {
 }
 
 void
+tui_init(void) {
+
+	tb_init();
+
+}
+
+void
+tui_clear(void) {
+
+	tb_clear();
+
+}
+
+void
 tui_update_size(void) {
 
 	h = tb_height();
 	w = tb_width();
+
+}
+
+enum nncards_commands
+tui_poll_event(void) {
+
+	struct tb_event ev;
+
+	tb_poll_event(&ev);
+
+	switch (ev.ch) {
+		case 'c': return NEXT;
+		case 'l': return NEXT;
+		case 'z': return PREV;
+		case 'h': return PREV;
+		case 'x': return FLIP;
+		case ' ': return FLIP;
+		case 'd': return LAST;
+		case 'a': return FIRST;
+		case 'q': return QUIT;
+		default: break;
+	}
+
+	switch (ev.key) {
+		case TB_KEY_ARROW_RIGHT: return NEXT;
+		case TB_KEY_ARROW_LEFT:  return PREV;
+		case TB_KEY_ARROW_UP:    return FLIP;
+		case TB_KEY_ARROW_DOWN:  return FLIP;
+		case TB_KEY_PGUP:        return LAST;
+		case TB_KEY_PGDN:        return FIRST;
+		case TB_KEY_ESC:         return QUIT;
+		default: break;
+	}
+
+	return -1;
+
+}
+
+void
+tui_shutdown(void) {
+
+	tb_shutdown();
 
 }
 
