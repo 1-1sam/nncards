@@ -4,15 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 
-struct card {
-	char* side1;
-	char* side2;
-};
-
-struct deck {
-	struct card* cards;
-	int cardnum;
-};
+#include "card-parse.h"
 
 static int
 _get_cardnum(char* filename) {

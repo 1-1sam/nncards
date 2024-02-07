@@ -2,7 +2,7 @@
 #include <string.h>
 
 #define TB_IMPL
-#include "termbox2.h"
+#include "tui.h"
 
 /* Maximum number of characters I've arbitrarily decided for the info bar. */
 #define BARMAX 255
@@ -14,7 +14,7 @@
 #define BOX_HORZ_LINE 0x2500
 #define BOX_VERT_LINE 0x2502
 
-int h, w;
+static int h, w;
 
 static void
 _text_print(char* str) {

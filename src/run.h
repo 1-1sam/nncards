@@ -2,7 +2,7 @@ typedef int flag_t;
 
 struct nncards {
 	enum { RUN, NORUN, ERROR } run_state;
-	char** cardfile;
+	char** cardfiles;
 	int filenum;
 	enum { TERM, DEFINITION } first_side;
 	flag_t random;

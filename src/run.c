@@ -2,14 +2,13 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include "tui.h"
 #include "card-parse.h"
+#include "run.h"
+#include "tui.h"
 
 #ifndef NNC_VERSION
- #define NNC_VERSION "3.1"
+#  define NNC_VERSION "3.1"
 #endif
-
-typedef int flag_t;
 
 enum nncards_commands {
 	NEXT,
@@ -18,14 +17,6 @@ enum nncards_commands {
 	LAST,
 	FIRST,
 	QUIT,
-};
-
-struct nncards {
-	enum { RUN, NORUN, ERROR } run_state;
-	char** cardfiles;
-	int filenum;
-	enum { TERM, DEFINITION } first_side;
-	flag_t random;
 };
 
 static void
