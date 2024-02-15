@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
 
@@ -9,15 +10,6 @@
 #ifndef NNC_VERSION
 #  define NNC_VERSION "3.1"
 #endif
-
-enum nncards_commands {
-	NEXT,
-	PREV,
-	FLIP,
-	LAST,
-	FIRST,
-	QUIT,
-};
 
 static void
 _print_help(void) {
@@ -44,37 +36,6 @@ static void
 _print_version(void) {
 
 	printf("nncards - %s\n", NNC_VERSION);
-
-}
-
-static enum nncards_commands
-_event_parse(struct tb_event ev) {
-
-	switch (ev.ch) {
-		case 'c': return NEXT;
-		case 'l': return NEXT;
-		case 'z': return PREV;
-		case 'h': return PREV;
-		case 'x': return FLIP;
-		case ' ': return FLIP;
-		case 'd': return LAST;
-		case 'a': return FIRST;
-		case 'q': return QUIT;
-		default: break;
-	}
-
-	switch (ev.key) {
-		case TB_KEY_ARROW_RIGHT:  return NEXT;
-		case TB_KEY_ARROW_LEFT:   return PREV;
-		case TB_KEY_ARROW_UP:     return FLIP;
-		case TB_KEY_ARROW_DOWN:   return FLIP;
-		case TB_KEY_PGDN:         return LAST;
-		case TB_KEY_PGUP:         return FIRST;
-		case TB_KEY_ESC:          return QUIT;
-		default: break;
-	}
-
-	return -1;
 
 }
 
@@ -147,7 +108,6 @@ int
 nnc_main_loop(struct nncards nncards) {
 
 	struct deck deck;
-	struct tb_event ev;
 	int currcard = 0;
 	char* currstr;
 
@@ -174,20 +134,18 @@ nnc_main_loop(struct nncards nncards) {
 
 	currstr = deck.cards[0].side1;
 
-	tb_init();
+	tui_init();
 
 	for (;;) {
 
-		tb_clear();
+		tui_clear();
 
 		tui_update_size();
 		tui_draw_card(currstr);
 		tui_draw_info(currcard, deck.cardnum, nncards.cardfiles,
 			nncards.filenum);
 
-		tb_poll_event(&ev);
-
-		switch (_event_parse(ev)) {
+		switch (tui_poll_event()) {
 			case NEXT:
 				if (currcard < deck.cardnum - 1)
 					currstr = deck.cards[++currcard].side1;
@@ -207,7 +165,7 @@ nnc_main_loop(struct nncards nncards) {
 				currstr = deck.cards[currcard = deck.cardnum - 1].side1;
 				break;
 			case QUIT:
-				tb_shutdown();
+				tui_shutdown();
 				for (int i = 0; i < deck.cardnum; i++) {
 					free(deck.cards[i].side1);
 					free(deck.cards[i].side2);
