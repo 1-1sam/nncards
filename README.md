@@ -49,4 +49,3 @@ make nncards_version=13.37
 ## License
 **nncards** is licensed under the Simplified BSD License, also called the 
 BSD-2-Clause License. View the LICENSE file for more information.
-
