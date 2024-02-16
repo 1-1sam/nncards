@@ -1,6 +1,6 @@
 # nncards
-**nncards** is a simple TUI flashcard program written in C. It creates
-flashcards from given card files.
+**nncards** (**n**ot **n**curses **cards**) is a simple TUI flashcard program
+written in C. It creates flashcards from given card files.
 
 ## Usage
 **nncards** must be given at least 1 card file as an argument. Here is how
