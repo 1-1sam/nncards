@@ -1,3 +1,7 @@
+3.1 -> (2/23/2024)
+Changes:
+  - Manual is now installed via make install-man.
+
 3.0 -> 3.1 (1/18/2024)
 Changes:
   - Manual is installed to <DESTDIR>/<PREFIX>/<MANDIR> in make install.
