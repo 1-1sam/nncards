@@ -166,11 +166,7 @@ nnc_main_loop(struct nncards nncards) {
 				break;
 			case QUIT:
 				tui_shutdown();
-				for (int i = 0; i < deck.cardnum; i++) {
-					free(deck.cards[i].side1);
-					free(deck.cards[i].side2);
-				}
-				free(deck.cards);
+				cp_free_cards(deck);
 				return 0;
 			default: break;
 		}

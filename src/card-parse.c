@@ -174,3 +174,15 @@ cp_side_swap(struct deck deck) {
 		deck.cards[i].side2 = p;
 	}
 }
+
+void
+cp_free_cards(struct deck deck) {
+
+	for (int i = 0; i < deck.cardnum; i++) {
+		free(deck.cards[i].side1);
+		free(deck.cards[i].side2);
+	}
+
+	free(deck.cards);
+
+}
